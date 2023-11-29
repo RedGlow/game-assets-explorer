@@ -1,9 +1,5 @@
-import { ServerContents } from '@/app/contents/server-contents';
+import { ServerContents } from '@/app/contents/[...prefix]/server-contents';
 
 export default async function Home() {
-  return (
-    <main>
-      <ServerContents prefix="Kenney/" />
-    </main>
-  );
+  return <ServerContents prefix="/" />;
 }

@@ -20,7 +20,7 @@ export async function listBuckets() {
   return commandOutput.Buckets;
 }
 
-export async function getEntries(prefix = "Kenney/") {
+export async function getEntries(prefix = "/") {
   const command = new ListObjectsV2Command({
     Bucket: process.env.AWS_BUCKET_NAME,
     Delimiter: "/",

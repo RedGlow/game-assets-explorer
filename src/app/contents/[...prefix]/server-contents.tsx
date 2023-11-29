@@ -43,7 +43,7 @@ export async function ServerContents({ prefix }: IServerContentsProps) {
   return (
     <main>
       <Contents entries={entries} prefix={prefix} tags={tags} setTag={setTag} />
-      <pre>{JSON.stringify(listObjects, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(listObjects, null, 2)}</pre> */}
       {/* <pre>{JSON.stringify(entries, null, 2)}</pre> */}
     </main>
   );
