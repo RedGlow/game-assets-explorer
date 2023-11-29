@@ -1,4 +1,6 @@
-import { ListBucketsCommand, ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3';
+import {
+    ListBucketsCommand, ListObjectsV2Command, PutObjectTaggingCommand, S3Client
+} from '@aws-sdk/client-s3';
 import { fromEnv } from '@aws-sdk/credential-providers'; // ES6 import
 
 let s3Client: S3Client | undefined = undefined;

@@ -1,4 +1,4 @@
-import { ServerContents } from '@/lib/components/server-contents';
+import { ServerContents } from '@/app/contents/server-contents';
 
 export default async function Home() {
   return (

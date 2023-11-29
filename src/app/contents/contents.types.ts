@@ -1,3 +1,5 @@
+import { ITags } from '@/lib/tags';
+
 export interface IContentsEntryDirectory {
   kind: "directory";
   fullName: string; // e.g.: "Kenney/3D assets/"
@@ -12,8 +14,10 @@ export interface IContentsEntryFile {
 export type IContentsEntry = IContentsEntryDirectory | IContentsEntryFile;
 
 export interface IContentsProps {
-  parentPrefix: string;
+  prefix: string;
   entries: IContentsEntry[];
+  tags: ITags;
+  setTag(fullName: string, tag: string): Promise<void>;
 }
 
 export interface IServerContentsProps {
