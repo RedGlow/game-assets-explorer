@@ -2,10 +2,14 @@ import { ListGroup, ListGroupItem } from 'flowbite-react';
 import Link from 'next/link';
 import { HiFolder, HiOutlineDocument } from 'react-icons/hi';
 
+import { ITags } from '@/lib/tags';
+
 import { IContentsEntry } from './contents.types';
+import { Tags } from './Tags';
 
 export interface IEntriesProps {
   entries: IContentsEntry[];
+  tags: ITags;
 }
 
 const getLastPart = <T extends unknown>(name: T[], skip: number) =>
@@ -13,7 +17,7 @@ const getLastPart = <T extends unknown>(name: T[], skip: number) =>
 const getName = (fullName: string, skip: number = 0) =>
   getLastPart(fullName.split("/"), skip);
 
-export function Entries({ entries }: IEntriesProps) {
+export function Entries({ entries, tags }: IEntriesProps) {
   const getEntries = (kind: IContentsEntry["kind"]) =>
     entries
       .filter((e) => e.kind == kind)
@@ -26,7 +30,10 @@ export function Entries({ entries }: IEntriesProps) {
     <ListGroup>
       {dirEntries.map((entry) => (
         <ListGroupItem key={entry.fullName} icon={HiFolder}>
-          <Link className='w-full text-left' href={`/contents/${encodeURI(entry.fullName)}`}>
+          <Link
+            className="w-full text-left"
+            href={`/contents/${encodeURI(entry.fullName)}`}
+          >
             {getName(entry.fullName, 1)}
           </Link>
         </ListGroupItem>
@@ -34,8 +41,12 @@ export function Entries({ entries }: IEntriesProps) {
       {fileEntries.map((entry) => (
         <ListGroupItem key={entry.fullName} icon={HiOutlineDocument}>
           {getName(entry.fullName)}
+          <Tags tags={getTagsString(tags, entry.fullName)} />
         </ListGroupItem>
       ))}
     </ListGroup>
   );
 }
+
+const getTagsString = (tags: ITags, fullName: string) =>
+  fullName in tags ? tags[fullName] : [];

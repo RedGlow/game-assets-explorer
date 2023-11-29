@@ -14,9 +14,7 @@ export async function tagFile(fullName: string, key: string, value: string) {
 }
 
 export interface ITags {
-  [fullName: string]: {
-    [tagKey: string]: string[];
-  };
+  [fullName: string]: [string, string][];
 }
 
 export async function getTags(fullNames: string[]): Promise<ITags> {
@@ -32,10 +30,7 @@ export async function getTags(fullNames: string[]): Promise<ITags> {
   const result = mapValues(
     groupBy(results, (row) => row.fileFullName),
     (rows) =>
-      mapValues(
-        groupBy(rows, (row) => row.tagKey),
-        (rows) => rows.map((row) => row.tagValue)
-      )
+      rows.map((row) => [row.tagKey, row.tagValue] as [string, string])
   );
   // return the result
   return result;
