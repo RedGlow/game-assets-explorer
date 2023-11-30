@@ -1,12 +1,11 @@
 import { ListGroup, ListGroupItem } from 'flowbite-react';
 import Link from 'next/link';
-import { HiFolder, HiOutlineDocument } from 'react-icons/hi';
+import { HiFolder } from 'react-icons/hi';
 
 import { getExistingTags, ITags } from '@/lib/tags';
 
 import { IContentsEntry } from './contents.types';
-import { Tags } from './Tags';
-import { TagSingleEntry } from './TagSingleEntry';
+import { Entry } from './Entry';
 
 export interface IEntriesProps {
   entries: IContentsEntry[];
@@ -42,21 +41,10 @@ export async function Entries({ entries, tags }: IEntriesProps) {
         </ListGroupItem>
       ))}
       {fileEntries.map((entry) => (
-        <ListGroupItem key={entry.fullName} icon={HiOutlineDocument}>
-          <TagSingleEntry
-            existingTags={existingTags}
-            fileFullName={entry.fullName}
-          />
-          {getName(entry.fullName)}
-          <Tags
-            fullName={entry.fullName}
-            tags={getTagsString(tags, entry.fullName)}
-          />
+        <ListGroupItem key={entry.fullName}>
+          <Entry entry={entry} existingTags={existingTags} tags={tags} />
         </ListGroupItem>
       ))}
     </ListGroup>
   );
 }
-
-const getTagsString = (tags: ITags, fullName: string) =>
-  fullName in tags ? tags[fullName] : [];

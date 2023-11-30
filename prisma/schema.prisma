@@ -17,3 +17,9 @@ model TaggedFile {
 
   @@id([tagKey, tagValue, fileFullName])
 }
+
+model PresignedDownloadUrls {
+  fullname   String   @id
+  expiration DateTime
+  url        String
+}
