@@ -1,5 +1,7 @@
 "use client";
 import { Badge } from 'flowbite-react';
+import { useCallback, useState } from 'react';
+import { AiOutlineLoading } from 'react-icons/ai';
 import { HiOutlineX } from 'react-icons/hi';
 
 import { onDeleteTag } from './on-delete-tag';
@@ -42,11 +44,24 @@ interface ITagChipProps {
 }
 
 export function TagChip({ tagKey, tagValue, fullName }: ITagChipProps) {
+  const [processing, setProcessing] = useState(false);
+
+  const onClick = useCallback(() => {
+    setProcessing(true);
+    onDeleteTag(fullName, tagKey, tagValue)
+      .catch(console.error)
+      .finally(() => setProcessing(false));
+  }, [fullName, tagKey, tagValue]);
+
   return (
     <Badge key={`${tagKey}-${tagValue}`} color={getColor(tagKey)}>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-2">
         {tagKey}: {tagValue}
-        <HiOutlineX onClick={() => onDeleteTag(fullName, tagKey, tagValue)} />
+        {!processing ? (
+          <HiOutlineX onClick={onClick} />
+        ) : (
+          <AiOutlineLoading className="animate-spin" />
+        )}
       </div>
     </Badge>
   );

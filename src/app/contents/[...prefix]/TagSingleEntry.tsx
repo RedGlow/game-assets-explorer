@@ -67,7 +67,8 @@ export function TagSingleEntry({
             />
             <div className="w-full">
               <Button
-                disabled={!isSubmitEnabled || updating}
+                disabled={!isSubmitEnabled}
+                isProcessing={updating}
                 onClick={onButtonClick}
               >
                 {updating ? "Adding..." : "Add"}
