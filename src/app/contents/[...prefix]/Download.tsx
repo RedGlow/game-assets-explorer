@@ -53,6 +53,7 @@ export function Download({ fullname }: { fullname: string }) {
       {working && <Loading />}
       {url && (
         <a
+          target="_blank"
           ref={anchorRef}
           href={url}
           className="hidden"
