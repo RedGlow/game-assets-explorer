@@ -5,6 +5,7 @@ import { ITags } from '@/lib/tags';
 
 import { AudioPreview } from './AudioPreview';
 import { IContentsEntry } from './contents.types';
+import { Download } from './Download';
 import { Tags } from './Tags';
 import { TagSingleEntry } from './TagSingleEntry';
 
@@ -27,6 +28,7 @@ export function Entry({
 
   return (
     <>
+      <Download fullname={entry.fullName} />
       <span className="mr-2">
         {isAudio ? (
           <AudioPreview fullname={entry.fullName} />
