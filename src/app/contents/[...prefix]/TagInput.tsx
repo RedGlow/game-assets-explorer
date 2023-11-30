@@ -1,78 +1,42 @@
-"use client";
-import { Button, Label, Modal, TextInput } from 'flowbite-react';
+import { Label, TextInput } from 'flowbite-react';
 import { ChangeEvent, forwardRef, KeyboardEvent, useCallback, useRef, useState } from 'react';
 
-import { onAddTags } from './on-add-tag';
-import { TagInput } from './TagInput';
-
-export interface IAddTagModalProps {
-  fullnames: string[];
-  isModalOpened: boolean;
-  closeModal(): void;
+export interface ITagInputProps {
+  tagKey: string;
+  setTagKey(newTagKey: string): void;
+  tagValue: string;
+  setTagValue(newTagValue: string): void;
   existingTags: { [tagKey: string]: string[] };
 }
 
-export function AddTagModal({
-  isModalOpened,
-  closeModal,
-  existingTags,
-  fullnames,
-}: IAddTagModalProps) {
-  const firstElementRef = useRef<HTMLInputElement>(null);
-
-  const [tagKey, setTagKey] = useState("");
-  const [tagValue, setTagValue] = useState("");
-
-  useResetContents(isModalOpened, setTagKey, setTagValue);
-
-  const isSubmitEnabled = !!tagKey && !!tagValue;
-
-  const [updating, setUpdating] = useState(false);
-
-  const onButtonClick = useCallback(() => {
-    setUpdating(true);
-    onAddTags(fullnames, tagKey, tagValue)
-      .then(closeModal)
-      .catch(console.error)
-      .finally(() => setUpdating(false));
-  }, [closeModal, fullnames, tagKey, tagValue]);
-
-  return (
-    <Modal
-      dismissible
-      show={isModalOpened}
-      onClose={closeModal}
-      initialFocus={firstElementRef}
-    >
-      <Modal.Header>
-        <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-          Add a tag
-        </h3>
-      </Modal.Header>
-      <Modal.Body>
-        <div className="space-y-6">
-          <TagInput
-            existingTags={existingTags}
-            setTagKey={setTagKey}
-            setTagValue={setTagValue}
-            tagKey={tagKey}
-            tagValue={tagValue}
-            ref={firstElementRef}
-          />
-          <div className="w-full">
-            <Button
-              disabled={!isSubmitEnabled}
-              isProcessing={updating}
-              onClick={onButtonClick}
-            >
-              {updating ? "Adding..." : "Add"}
-            </Button>
-          </div>
-        </div>
-      </Modal.Body>
-    </Modal>
-  );
-}
+export const TagInput = forwardRef<HTMLInputElement, ITagInputProps>(
+  function TagInput(
+    { tagKey, setTagKey, setTagValue, tagValue, existingTags },
+    ref
+  ) {
+    return (
+      <div className="flex gap-4 w-full">
+        <FormElement
+          id="tag-key"
+          ref={ref}
+          label="Key"
+          value={tagKey}
+          onChange={setTagKey}
+          suggestions={
+            existingTags ? Object.getOwnPropertyNames(existingTags) : []
+          }
+        />
+        <FormElement
+          id="tag-value"
+          label="Value"
+          value={tagValue}
+          onChange={setTagValue}
+          suggestions={existingTags[tagKey] || []}
+        />
+      </div>
+    );
+  }
+);
 
 interface IFormElementProps {
   id: string;
@@ -137,7 +101,7 @@ const FormElement = forwardRef<HTMLInputElement, IFormElementProps>(
     );
 
     return (
-      <div>
+      <div className="flex-1">
         <div className="mb-2 block" ref={measureRef}>
           <Label htmlFor={id} value={label} />
         </div>
@@ -179,22 +143,3 @@ const FormElement = forwardRef<HTMLInputElement, IFormElementProps>(
     );
   }
 );
-
-/**
- * Resets the contents of the tag key/value if the modal is opened.
- * @param isModalOpened Whether the modal should be opened now
- * @param setTagKey function to update the tag key
- * @param setTagValue function to update the tag value
- */
-function useResetContents(
-  isModalOpened: boolean,
-  setTagKey: (newValue: string) => void,
-  setTagValue: (newValue: string) => void
-) {
-  const previousOpened = useRef(isModalOpened);
-  if (!previousOpened.current && isModalOpened) {
-    setTagKey("");
-    setTagValue("");
-  }
-  previousOpened.current = isModalOpened;
-}
