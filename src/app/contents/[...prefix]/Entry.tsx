@@ -1,5 +1,4 @@
-import { Checkbox } from 'flowbite-react';
-import last from 'lodash-es/last';
+import { Checkbox, Table } from 'flowbite-react';
 import { ChangeEvent, useCallback } from 'react';
 import { HiOutlineDocument } from 'react-icons/hi';
 
@@ -56,35 +55,43 @@ export function Entry({
   );
 
   return (
-    <>
-      <Checkbox
-        id={`selected-${entry.fullName}`}
-        checked={
-          entry.fullName in selectedEntries && selectedEntries[entry.fullName]
-        }
-        onChange={onSelectionChanged}
-        className="mr-2"
-      />
-      <Download fullname={entry.fullName} />
-      <span className="mr-2">
-        {isAudio ? (
-          <AudioPreview fullname={entry.fullName} />
-        ) : isImage ? (
-          <ImagePreview fullname={entry.fullName} />
-        ) : (
-          <HiOutlineDocument />
-        )}
-      </span>
-      <TagSingleEntry
-        existingTags={existingTags}
-        fileFullName={entry.fullName}
-      />
-      {getName(entry.fullName)}
-      <Tags
-        fullName={entry.fullName}
-        tags={getTagsString(tags, entry.fullName)}
-      />
-    </>
+    <Table.Row>
+      <Table.Cell className="w-8">
+        <Checkbox
+          id={`selected-${entry.fullName}`}
+          checked={
+            entry.fullName in selectedEntries && selectedEntries[entry.fullName]
+          }
+          onChange={onSelectionChanged}
+          className="mr-2"
+        />
+      </Table.Cell>
+      <Table.Cell>
+        <div className="flex items-center gap-2">
+          <Download fullname={entry.fullName} />
+          <span className="mr-2">
+            {isAudio ? (
+              <AudioPreview fullname={entry.fullName} />
+            ) : isImage ? (
+              <ImagePreview fullname={entry.fullName} />
+            ) : (
+              <HiOutlineDocument />
+            )}
+          </span>
+          <TagSingleEntry
+            existingTags={existingTags}
+            fileFullName={entry.fullName}
+          />
+          {getName(entry.fullName)}
+        </div>
+      </Table.Cell>
+      <Table.Cell>
+        <Tags
+          fullName={entry.fullName}
+          tags={getTagsString(tags, entry.fullName)}
+        />
+      </Table.Cell>
+    </Table.Row>
   );
 }
 

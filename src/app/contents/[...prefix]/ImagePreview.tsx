@@ -41,7 +41,7 @@ export function ImagePreview({ fullname }: { fullname: string }) {
       {!working && <MdImageSearch onClick={onClick} />}
       {working && <Loading />}
       {opened && url !== null && (
-        <div className="absolute left-0 right-0 top-0 bottom-0 z-20 flex justify-center items-center">
+        <div className="fixed left-0 right-0 top-0 bottom-0 z-20 flex justify-center items-center">
           <div className="bg-black opacity-60 absolute left-0 right-0 top-0 bottom-0" onClick={close}/>
           <div
             className={`${background === 0 ? "bg-white" : "bg-black"} z-30`}

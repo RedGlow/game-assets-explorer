@@ -1,5 +1,5 @@
 "use client";
-import { ListGroup } from 'flowbite-react';
+import { Checkbox, Table } from 'flowbite-react';
 import fromPairs from 'lodash-es/fromPairs';
 import Link from 'next/link';
 import { useCallback, useState } from 'react';
@@ -88,7 +88,7 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
 
   return (
     <>
-      <div className="flex gap-16 items-center">
+      <div className="flex gap-16 items-center divide-x">
         <EntriesSorting
           nameAscending={nameAscending}
           setNameAscending={setNameAscending}
@@ -103,29 +103,44 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
           existingTags={existingTags}
         />
       </div>
-      <ListGroup>
-        {dirEntries.map((entry) => (
-          <ListGroup.Item key={entry.fullName} icon={HiFolder}>
-            <Link
-              className="w-full text-left"
-              href={`/contents/${encodeURI(entry.fullName)}`}
-            >
-              {getName(entry.fullName, 1)}
-            </Link>
-          </ListGroup.Item>
-        ))}
-        {fileEntries.map((entry) => (
-          <ListGroup.Item key={entry.fullName}>
+      <Table className="table-fixed">
+        <Table.Head>
+          <Table.HeadCell className="p-4 w-8">
+            <Checkbox />
+          </Table.HeadCell>
+          <Table.HeadCell>name</Table.HeadCell>
+          <Table.HeadCell>tags</Table.HeadCell>
+        </Table.Head>
+        <Table.Body className="divide-y">
+          {dirEntries.map((entry) => (
+            <Table.Row key={entry.fullName}>
+              <Table.Cell className="w-8" />
+              <Table.Cell>
+                <div className="flex items-center gap-2">
+                  <HiFolder />
+                  <Link
+                    className="w-full text-left"
+                    href={`/contents/${encodeURI(entry.fullName)}`}
+                  >
+                    {getName(entry.fullName, 1)}
+                  </Link>
+                </div>
+              </Table.Cell>
+              <Table.Cell />
+            </Table.Row>
+          ))}
+          {fileEntries.map((entry) => (
             <Entry
+              key={entry.fullName}
               entry={entry}
               existingTags={existingTags}
               tags={tags}
               selectedEntries={selectedEntries}
               setEntrySelection={setEntrySelection}
             />
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
+          ))}
+        </Table.Body>
+      </Table>
     </>
   );
 }
