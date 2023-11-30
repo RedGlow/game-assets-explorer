@@ -41,7 +41,10 @@ export function Entries({ entries, tags }: IEntriesProps) {
       {fileEntries.map((entry) => (
         <ListGroupItem key={entry.fullName} icon={HiOutlineDocument}>
           {getName(entry.fullName)}
-          <Tags tags={getTagsString(tags, entry.fullName)} />
+          <Tags
+            fullName={entry.fullName}
+            tags={getTagsString(tags, entry.fullName)}
+          />
         </ListGroupItem>
       ))}
     </ListGroup>

@@ -29,9 +29,24 @@ export async function getTags(fullNames: string[]): Promise<ITags> {
   // group the rows first by fullname, then by tag key
   const result = mapValues(
     groupBy(results, (row) => row.fileFullName),
-    (rows) =>
-      rows.map((row) => [row.tagKey, row.tagValue] as [string, string])
+    (rows) => rows.map((row) => [row.tagKey, row.tagValue] as [string, string])
   );
   // return the result
   return result;
+}
+
+export async function removeTag(
+  fullName: string,
+  tagKey: string,
+  tagValue: string
+) {
+  await prisma.taggedFile.delete({
+    where: {
+      tagKey_tagValue_fileFullName: {
+        fileFullName: fullName,
+        tagKey,
+        tagValue,
+      },
+    },
+  });
 }
