@@ -10,7 +10,6 @@ enum Area {
 
 export function NavigationBar() {
   const pathname = usePathname();
-  console.log(pathname);
   const area = pathname.startsWith("/contents") ? Area.Contents : Area.Search;
   return (
     <Navbar fluid rounded className="h-16">
