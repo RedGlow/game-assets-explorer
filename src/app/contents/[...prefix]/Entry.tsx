@@ -6,10 +6,12 @@ import { ITags } from '@/lib/tags';
 import { AudioPreview } from './AudioPreview';
 import { IContentsEntry } from './contents.types';
 import { Download } from './Download';
+import { ImagePreview } from './ImagePreview';
 import { Tags } from './Tags';
 import { TagSingleEntry } from './TagSingleEntry';
 
 const audioExtensions = ["ogg", "mp3", "wav"];
+const imageExtensions = ["gif", "png", "jpg", "jpeg"];
 
 export function Entry({
   entry,
@@ -25,6 +27,8 @@ export function Entry({
   const extension = last(entry.fullName.split("."));
   const isAudio =
     extension !== undefined && audioExtensions.indexOf(extension) >= 0;
+  const isImage =
+    extension !== undefined && imageExtensions.indexOf(extension) >= 0;
 
   return (
     <>
@@ -32,6 +36,8 @@ export function Entry({
       <span className="mr-2">
         {isAudio ? (
           <AudioPreview fullname={entry.fullName} />
+        ) : isImage ? (
+          <ImagePreview fullname={entry.fullName} />
         ) : (
           <HiOutlineDocument />
         )}
