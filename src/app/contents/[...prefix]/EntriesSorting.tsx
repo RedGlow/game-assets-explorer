@@ -10,21 +10,23 @@ export type SortOrders = {
   extension: boolean;
 };
 
-function SortButton({
-  label,
-  value,
-  currentSortBy,
-  setSortBy,
-  ascending,
-  setAscending,
-}: {
+export interface ISortButtonProps {
   label: string;
   value: SortBy;
   currentSortBy: SortBy;
   setSortBy(newValue: SortBy): void;
   ascending: boolean;
   setAscending(newValue: boolean): void;
-}) {
+}
+
+export function SortButton({
+  label,
+  value,
+  currentSortBy,
+  setSortBy,
+  ascending,
+  setAscending,
+}: ISortButtonProps) {
   const onClick = useCallback(() => {
     if (currentSortBy === value) {
       setAscending(!ascending);

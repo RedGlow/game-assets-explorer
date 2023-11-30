@@ -10,7 +10,7 @@ import { ITags } from '@/lib/tags';
 
 import { IContentsEntry } from './contents.types';
 import { EntriesGroupActions } from './EntriesGroupActions';
-import { EntriesSorting, SortBy } from './EntriesSorting';
+import { EntriesSorting, SortButton, SortBy } from './EntriesSorting';
 import { Entry, SelectedEntries } from './Entry';
 
 export interface IEntriesClient {
@@ -90,15 +90,7 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
 
   return (
     <>
-      <div className="flex gap-16 items-center divide-x">
-        <EntriesSorting
-          nameAscending={nameAscending}
-          setNameAscending={setNameAscending}
-          extensionAscending={extensionAscending}
-          setExtensionAscending={setExtensionAscending}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-        />
+      <div className="flex gap-16 items-center mt-6 mb-2">
         <EntriesGroupActions
           selectedEntries={selectedEntries}
           existingTags={existingTags}
@@ -109,8 +101,31 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
           <Table.HeadCell className="p-4 w-8">
             <Checkbox onChange={onToggleAllCheckboxClicked} />
           </Table.HeadCell>
-          <Table.HeadCell>name</Table.HeadCell>
-          <Table.HeadCell>tags</Table.HeadCell>
+          <Table.HeadCell>
+            <div className="flex items-center gap-2">
+              name{" "}
+              <SortButton
+                label=""
+                value="name"
+                currentSortBy={sortBy}
+                setSortBy={setSortBy}
+                ascending={nameAscending}
+                setAscending={setNameAscending}
+              />
+              and extension{" "}
+              <SortButton
+                label=""
+                value="extension"
+                currentSortBy={sortBy}
+                setSortBy={setSortBy}
+                ascending={extensionAscending}
+                setAscending={setExtensionAscending}
+              />
+            </div>
+          </Table.HeadCell>
+          <Table.HeadCell>
+            tags
+          </Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
           {dirEntries.map((entry) => (
