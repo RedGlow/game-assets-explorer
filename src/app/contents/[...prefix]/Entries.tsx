@@ -100,6 +100,7 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
         <EntriesGroupActions
           toggleAll={toggleAll}
           selectedEntries={selectedEntries}
+          existingTags={existingTags}
         />
       </div>
       <ListGroup>

@@ -54,7 +54,9 @@ export function AddTagModal({
             label="Key"
             value={tagKey}
             onChange={setTagKey}
-            suggestions={Object.getOwnPropertyNames(existingTags)}
+            suggestions={
+              existingTags ? Object.getOwnPropertyNames(existingTags) : []
+            }
           />
           <FormElement
             id="tag-value"
