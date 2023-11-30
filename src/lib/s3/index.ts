@@ -27,7 +27,7 @@ export async function getEntries(prefix = "/") {
   const command = new ListObjectsV2Command({
     Bucket: process.env.AWS_BUCKET_NAME,
     Delimiter: "/",
-    MaxKeys: 20,
+    MaxKeys: 800,
     Prefix: prefix,
   });
   const client = getS3Client();
