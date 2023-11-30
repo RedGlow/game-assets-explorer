@@ -88,7 +88,7 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
 
   return (
     <>
-      <div className="flex gap-8 items-center">
+      <div className="flex gap-16 items-center">
         <EntriesSorting
           nameAscending={nameAscending}
           setNameAscending={setNameAscending}
@@ -97,7 +97,10 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
           sortBy={sortBy}
           setSortBy={setSortBy}
         />
-        <EntriesGroupActions toggleAll={toggleAll} />
+        <EntriesGroupActions
+          toggleAll={toggleAll}
+          selectedEntries={selectedEntries}
+        />
       </div>
       <ListGroup>
         {dirEntries.map((entry) => (

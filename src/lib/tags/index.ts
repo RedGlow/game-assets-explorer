@@ -14,6 +14,21 @@ export async function tagFile(fullName: string, key: string, value: string) {
   });
 }
 
+export async function tagFiles(
+  fullNames: string[],
+  key: string,
+  value: string
+) {
+  await prisma.taggedFile.createMany({
+    data: fullNames.map((fullName) => ({
+      fileFullName: fullName,
+      tagKey: key,
+      tagValue: value,
+    })),
+    skipDuplicates: true,
+  });
+}
+
 export interface ITags {
   [fullName: string]: [string, string][];
 }
