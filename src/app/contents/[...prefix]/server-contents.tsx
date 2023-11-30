@@ -1,11 +1,10 @@
-import { revalidatePath } from 'next/cache';
-
 import { getEntries } from '@/lib/s3';
-import { getTags, tagFile } from '@/lib/tags';
+import { getExistingTags, getTags } from '@/lib/tags';
 import { ListObjectsV2CommandOutput } from '@aws-sdk/client-s3';
 
-import { Contents } from './contents';
+import { Breadcrumb } from './Breadcrumb';
 import { IContentsEntry, IServerContentsProps } from './contents.types';
+import { Entries } from './Entries';
 
 function listObjectsToEntries(
   entries: ListObjectsV2CommandOutput
@@ -26,25 +25,20 @@ function listObjectsToEntries(
   return dirEntries.concat(fileEntries);
 }
 
-async function setTag(fullName: string, tag: string) {
-  "use server";
-
-  await tagFile(fullName, "type", tag);
-
-  revalidatePath("/contents");
-
-  return Promise.resolve();
-}
-
-export async function ServerContents({ prefix }: IServerContentsProps) {
+export async function ServerContents({
+  prefix,
+}: IServerContentsProps) {
   const listObjects = await getEntries(prefix);
   const entries = listObjectsToEntries(listObjects);
   const tags = await getTags(entries.map((entry) => entry.fullName));
+  const existingTags = await getExistingTags();
+
   return (
     <main>
-      <Contents entries={entries} prefix={prefix} tags={tags} setTag={setTag} />
-      {/* <pre>{JSON.stringify(listObjects, null, 2)}</pre> */}
-      {/* <pre>{JSON.stringify(entries, null, 2)}</pre> */}
+      <div>
+        <Breadcrumb prefix={prefix} />
+      </div>
+      <Entries entries={entries} tags={tags} existingTags={existingTags} />
     </main>
   );
 }

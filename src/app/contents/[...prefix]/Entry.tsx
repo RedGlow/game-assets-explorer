@@ -1,6 +1,7 @@
 import last from 'lodash-es/last';
 import { HiOutlineDocument } from 'react-icons/hi';
 
+import { getExtension } from '@/lib/get-extension';
 import { ITags } from '@/lib/tags';
 
 import { AudioPreview } from './AudioPreview';
@@ -24,7 +25,7 @@ export function Entry({
   };
   tags: ITags;
 }) {
-  const extension = last(entry.fullName.split("."));
+  const extension = getExtension(entry.fullName);
   const isAudio =
     extension !== undefined && audioExtensions.indexOf(extension) >= 0;
   const isImage =
