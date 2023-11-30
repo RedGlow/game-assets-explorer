@@ -2,10 +2,11 @@ import { ListGroup, ListGroupItem } from 'flowbite-react';
 import Link from 'next/link';
 import { HiFolder, HiOutlineDocument } from 'react-icons/hi';
 
-import { ITags } from '@/lib/tags';
+import { getExistingTags, ITags } from '@/lib/tags';
 
 import { IContentsEntry } from './contents.types';
 import { Tags } from './Tags';
+import { TagSingleEntry } from './TagSingleEntry';
 
 export interface IEntriesProps {
   entries: IContentsEntry[];
@@ -17,7 +18,7 @@ const getLastPart = <T extends unknown>(name: T[], skip: number) =>
 const getName = (fullName: string, skip: number = 0) =>
   getLastPart(fullName.split("/"), skip);
 
-export function Entries({ entries, tags }: IEntriesProps) {
+export async function Entries({ entries, tags }: IEntriesProps) {
   const getEntries = (kind: IContentsEntry["kind"]) =>
     entries
       .filter((e) => e.kind == kind)
@@ -25,6 +26,8 @@ export function Entries({ entries, tags }: IEntriesProps) {
 
   const dirEntries = getEntries("directory");
   const fileEntries = getEntries("file");
+
+  const existingTags = await getExistingTags();
 
   return (
     <ListGroup>
@@ -40,6 +43,10 @@ export function Entries({ entries, tags }: IEntriesProps) {
       ))}
       {fileEntries.map((entry) => (
         <ListGroupItem key={entry.fullName} icon={HiOutlineDocument}>
+          <TagSingleEntry
+            existingTags={existingTags}
+            fileFullName={entry.fullName}
+          />
           {getName(entry.fullName)}
           <Tags
             fullName={entry.fullName}

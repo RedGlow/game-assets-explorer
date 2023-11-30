@@ -19,7 +19,7 @@ const config: Config = {
         transparent: "transparent",
         current: "currentColor",
         primary: { light: "#fbf2ca", DEFAULT: "#f4d35e", dark: "#ea9e16" },
-        secondary: { light: "##ffafa0", DEFAULT: "#f95738", dark: "#c22f13" },
+        secondary: { light: "#ffafa0", DEFAULT: "#f95738", dark: "#c22f13" },
         tertiary: { light: "#066dc3", DEFAULT: "#0d3b66", dark: "#092848" },
       },
     },

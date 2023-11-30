@@ -1,6 +1,7 @@
 import groupBy from 'lodash-es/groupBy';
 import mapValues from 'lodash-es/mapValues';
 
+import { getter } from '../getter';
 import prisma from '../prisma';
 
 export async function tagFile(fullName: string, key: string, value: string) {
@@ -27,9 +28,9 @@ export async function getTags(fullNames: string[]): Promise<ITags> {
     },
   });
   // group the rows first by fullname, then by tag key
-  const result = mapValues(
-    groupBy(results, (row) => row.fileFullName),
-    (rows) => rows.map((row) => [row.tagKey, row.tagValue] as [string, string])
+  const grouped = groupBy(results, getter("fileFullName"));
+  const result = mapValues(grouped, (rows) =>
+    rows.map((row) => [row.tagKey, row.tagValue] as [string, string])
   );
   // return the result
   return result;
@@ -49,4 +50,19 @@ export async function removeTag(
       },
     },
   });
+}
+
+export async function getExistingTags() {
+  // get unique combinations of key-value
+  const results = await prisma.taggedFile.findMany({
+    select: {
+      tagKey: true,
+      tagValue: true,
+    },
+    distinct: ["tagKey", "tagValue"],
+  });
+  // group by key, and then for each key just map the values
+  const grouped = groupBy(results, getter("tagKey"));
+  const map = mapValues(grouped, (values) => values.map(getter("tagValue")));
+  return map;
 }
