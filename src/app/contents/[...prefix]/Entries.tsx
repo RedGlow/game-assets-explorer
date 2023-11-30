@@ -1,15 +1,17 @@
 "use client";
 import { ListGroup } from 'flowbite-react';
+import fromPairs from 'lodash-es/fromPairs';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { HiFolder } from 'react-icons/hi';
 
 import { getExtension } from '@/lib/get-extension';
 import { ITags } from '@/lib/tags';
 
 import { IContentsEntry } from './contents.types';
+import { EntriesGroupActions } from './EntriesGroupActions';
 import { EntriesSorting, SortBy } from './EntriesSorting';
-import { Entry } from './Entry';
+import { Entry, SelectedEntries } from './Entry';
 
 export interface IEntriesClient {
   entries: IContentsEntry[];
@@ -39,16 +41,64 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
   const dirEntries = getEntries("directory", true);
   const fileEntries = getEntries("file");
 
+  const [selectedEntries, setSelectedEntries] = useState<SelectedEntries>({});
+
+  // used for group operations with shift+click
+  const [lastSelectionOperationIndex, setLastSelectionOperationIndex] =
+    useState(-1);
+
+  const setEntrySelection = useCallback(
+    (fullname: string, isSelected: boolean, isGroupOperation: boolean) => {
+      if (isGroupOperation && lastSelectionOperationIndex !== -1) {
+        var newIndex = fileEntries.findIndex((e) => e.fullName === fullname);
+        setSelectedEntries((currOld) => {
+          const curr = { ...currOld };
+          for (
+            var i = lastSelectionOperationIndex;
+            i != newIndex;
+            i += newIndex > lastSelectionOperationIndex ? 1 : -1
+          ) {
+            const entry = fileEntries[i];
+            curr[entry.fullName] = true;
+          }
+          curr[fileEntries[newIndex].fullName] = true;
+          return curr;
+        });
+      } else {
+        setSelectedEntries((curr) => ({
+          ...curr,
+          [fullname]: isSelected,
+        }));
+        const idx = fileEntries.findIndex((e) => e.fullName === fullname);
+        setLastSelectionOperationIndex(idx);
+      }
+    },
+    [fileEntries, lastSelectionOperationIndex]
+  );
+
+  const toggleAll = useCallback(() => {
+    if (Object.keys(selectedEntries).some((key) => selectedEntries[key])) {
+      // at least one entry is selected
+      setSelectedEntries({});
+    } else {
+      setSelectedEntries(fromPairs(entries.map((e) => [e.fullName, true])));
+    }
+    setLastSelectionOperationIndex(-1);
+  }, [entries, selectedEntries]);
+
   return (
     <>
-      <EntriesSorting
-        nameAscending={nameAscending}
-        setNameAscending={setNameAscending}
-        extensionAscending={extensionAscending}
-        setExtensionAscending={setExtensionAscending}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-      />
+      <div className="flex gap-8 items-center">
+        <EntriesSorting
+          nameAscending={nameAscending}
+          setNameAscending={setNameAscending}
+          extensionAscending={extensionAscending}
+          setExtensionAscending={setExtensionAscending}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
+        <EntriesGroupActions toggleAll={toggleAll} />
+      </div>
       <ListGroup>
         {dirEntries.map((entry) => (
           <ListGroup.Item key={entry.fullName} icon={HiFolder}>
@@ -62,7 +112,13 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
         ))}
         {fileEntries.map((entry) => (
           <ListGroup.Item key={entry.fullName}>
-            <Entry entry={entry} existingTags={existingTags} tags={tags} />
+            <Entry
+              entry={entry}
+              existingTags={existingTags}
+              tags={tags}
+              selectedEntries={selectedEntries}
+              setEntrySelection={setEntrySelection}
+            />
           </ListGroup.Item>
         ))}
       </ListGroup>
