@@ -67,6 +67,16 @@ export async function removeTag(
   });
 }
 
+export async function removeTags(fullNames: string[]) {
+  await prisma.taggedFile.deleteMany({
+    where: {
+      fileFullName: {
+        in: fullNames,
+      },
+    },
+  });
+}
+
 export async function getExistingTags() {
   // get unique combinations of key-value
   const results = await prisma.taggedFile.findMany({
