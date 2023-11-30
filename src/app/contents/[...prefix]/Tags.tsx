@@ -7,7 +7,7 @@ export interface ITagsProps {
 
 export function Tags({ tags, fullName }: ITagsProps) {
   return (
-    <span className="ml-4 flex gap-1">
+    <span className="ml-4 flex flex-wrap gap-1">
       {tags.map(([key, value]) => (
         <TagChip key={key} tagKey={key} tagValue={value} fullName={fullName} />
       ))}

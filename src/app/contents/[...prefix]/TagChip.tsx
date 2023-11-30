@@ -55,7 +55,7 @@ export function TagChip({ tagKey, tagValue, fullName }: ITagChipProps) {
 
   return (
     <Badge key={`${tagKey}-${tagValue}`} color={getColor(tagKey)}>
-      <div className="flex items-center gap-2">
+      <div className="flex whitespace-nowrap flex-nowrap items-center gap-2">
         {tagKey}: {tagValue}
         {!processing ? (
           <HiOutlineX onClick={onClick} />
