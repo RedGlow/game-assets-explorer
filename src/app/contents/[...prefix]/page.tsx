@@ -6,6 +6,5 @@ export default async function Home({
   params: { prefix: string[] };
 }) {
   const prefix = params.prefix.map((x) => decodeURI(x)).join("/") + "/";
-  console.log("prefix=" + prefix);
   return <ServerContents prefix={prefix} />;
 }
