@@ -7,13 +7,11 @@ import { AddTagModal } from './AddTagModal';
 import { SelectedEntries } from './Entry';
 
 export interface IEntriesGroupActionsProps {
-  toggleAll(): void;
   selectedEntries: SelectedEntries;
   existingTags: { [tagKey: string]: string[] };
 }
 
 export function EntriesGroupActions({
-  toggleAll,
   selectedEntries,
   existingTags,
 }: IEntriesGroupActionsProps) {
@@ -27,9 +25,6 @@ export function EntriesGroupActions({
 
   return (
     <div className="flex gap-2">
-      <Button size="xs" onClick={toggleAll} color="gray">
-        Toggle all
-      </Button>
       <Button
         size="xs"
         onClick={onGroupTag}

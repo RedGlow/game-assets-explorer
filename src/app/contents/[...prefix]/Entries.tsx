@@ -2,7 +2,7 @@
 import { Checkbox, Table } from 'flowbite-react';
 import fromPairs from 'lodash-es/fromPairs';
 import Link from 'next/link';
-import { useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 import { HiFolder } from 'react-icons/hi';
 
 import { getExtension } from '@/lib/get-extension';
@@ -76,15 +76,17 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
     [fileEntries, lastSelectionOperationIndex]
   );
 
-  const toggleAll = useCallback(() => {
-    if (Object.keys(selectedEntries).some((key) => selectedEntries[key])) {
-      // at least one entry is selected
-      setSelectedEntries({});
-    } else {
-      setSelectedEntries(fromPairs(entries.map((e) => [e.fullName, true])));
-    }
-    setLastSelectionOperationIndex(-1);
-  }, [entries, selectedEntries]);
+  const onToggleAllCheckboxClicked = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setSelectedEntries(
+        e.target.checked
+          ? fromPairs(entries.map((e) => [e.fullName, true]))
+          : {}
+      );
+      setLastSelectionOperationIndex(-1);
+    },
+    [entries]
+  );
 
   return (
     <>
@@ -98,7 +100,6 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
           setSortBy={setSortBy}
         />
         <EntriesGroupActions
-          toggleAll={toggleAll}
           selectedEntries={selectedEntries}
           existingTags={existingTags}
         />
@@ -106,7 +107,7 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
       <Table className="table-fixed">
         <Table.Head>
           <Table.HeadCell className="p-4 w-8">
-            <Checkbox />
+            <Checkbox onChange={onToggleAllCheckboxClicked} />
           </Table.HeadCell>
           <Table.HeadCell>name</Table.HeadCell>
           <Table.HeadCell>tags</Table.HeadCell>
