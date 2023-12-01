@@ -90,7 +90,7 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
 
   return (
     <>
-      <div className="flex gap-16 items-center mt-6 mb-2">
+      <div className="flex gap-16 items-center mt-2 mb-2">
         <EntriesGroupActions
           selectedEntries={selectedEntries}
           existingTags={existingTags}

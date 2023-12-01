@@ -8,6 +8,5 @@ export interface ITagSelectorProps {
 }
 
 export function TagSelector({ existingTags, id }: ITagSelectorProps) {
-  console.log("existing tags:", existingTags);
   return <TextInput id={id} />;
 }

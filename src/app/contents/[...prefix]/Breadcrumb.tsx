@@ -1,8 +1,11 @@
-import { Breadcrumb as FlowbiteBreadcrumb, BreadcrumbItem } from 'flowbite-react';
-import last from 'lodash-es/last';
-import Link from 'next/link';
-import { useMemo } from 'react';
-import { HiHome } from 'react-icons/hi';
+import {
+  Breadcrumb as FlowbiteBreadcrumb,
+  BreadcrumbItem,
+} from "flowbite-react";
+import last from "lodash-es/last";
+import Link from "next/link";
+import { useMemo } from "react";
+import { HiHome } from "react-icons/hi";
 
 export interface IBreadcrumbProps {
   prefix: string;
@@ -15,7 +18,7 @@ export function Breadcrumb({ prefix }: IBreadcrumbProps) {
   );
 
   return (
-    <FlowbiteBreadcrumb className="mb-4">
+    <FlowbiteBreadcrumb>
       {breadcrumbElements.map((be, i) => (
         <BreadcrumbItem key={be.prefix} icon={i == 0 ? HiHome : undefined}>
           <Link href={`/contents/${encodeURI(be.prefix)}`}>

@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import flowbitePlugin from 'flowbite/plugin';
+import flowbitePlugin from "flowbite/plugin";
 
 const config: Config = {
   content: [
@@ -18,9 +18,27 @@ const config: Config = {
       colors: {
         transparent: "transparent",
         current: "currentColor",
-        primary: { light: "#fbf2ca", DEFAULT: "#f4d35e", dark: "#ea9e16" },
-        secondary: { light: "#ffafa0", DEFAULT: "#f95738", dark: "#c22f13" },
-        tertiary: { light: "#066dc3", DEFAULT: "#0d3b66", dark: "#092848" },
+        primary: {
+          lighter: "#fefaec",
+          light: "#fbf2ca",
+          DEFAULT: "#f4d35e",
+          dark: "#ea9e16",
+          darker: "#ac5611",
+        },
+        secondary: {
+          lighter: "#ffe5e0",
+          light: "#ffafa0",
+          DEFAULT: "#f95738",
+          dark: "#c22f13",
+          darker: "#852917",
+        },
+        tertiary: {
+          lighter: "#7fc4fa",
+          light: "#066dc3",
+          DEFAULT: "#094a83",
+          dark: "#0d3b66",
+          darker: "#0d3b66",
+        },
       },
     },
   },
