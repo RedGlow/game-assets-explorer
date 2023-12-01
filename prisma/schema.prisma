@@ -23,3 +23,7 @@ model PresignedDownloadUrls {
   expiration DateTime
   url        String
 }
+
+model AllowedUsers {
+  email String @id
+}
