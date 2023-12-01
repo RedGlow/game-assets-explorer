@@ -94,6 +94,7 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
         <EntriesGroupActions
           selectedEntries={selectedEntries}
           existingTags={existingTags}
+          tags={tags}
         />
       </div>
       <Table className="table-fixed">

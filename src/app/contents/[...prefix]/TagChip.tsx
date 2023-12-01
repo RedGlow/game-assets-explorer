@@ -40,13 +40,16 @@ const getColor = (tagKey: string) =>
 interface ITagChipProps {
   tagKey: string;
   tagValue: string;
-  fullName: string;
+  fullName?: string;
 }
 
 export function TagChip({ tagKey, tagValue, fullName }: ITagChipProps) {
   const [processing, setProcessing] = useState(false);
 
   const onClick = useCallback(() => {
+    if (!fullName) {
+      return;
+    }
     setProcessing(true);
     onDeleteTag(fullName, tagKey, tagValue)
       .catch(console.error)
@@ -57,11 +60,11 @@ export function TagChip({ tagKey, tagValue, fullName }: ITagChipProps) {
     <Badge key={`${tagKey}-${tagValue}`} color={getColor(tagKey)}>
       <div className="flex whitespace-nowrap flex-nowrap items-center gap-2">
         {tagKey}: {tagValue}
-        {!processing ? (
+        {!processing && !!fullName ? (
           <HiOutlineX onClick={onClick} />
-        ) : (
+        ) : !!fullName ? (
           <AiOutlineLoading className="animate-spin" />
-        )}
+        ) : null}
       </div>
     </Badge>
   );

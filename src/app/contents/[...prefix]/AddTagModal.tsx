@@ -4,12 +4,14 @@ import { ChangeEvent, forwardRef, KeyboardEvent, useCallback, useRef, useState }
 
 import { onAddTags } from './on-add-tag';
 import { TagInput } from './TagInput';
+import { Tags } from './Tags';
 
 export interface IAddTagModalProps {
   fullnames: string[];
   isModalOpened: boolean;
   closeModal(): void;
   existingTags: { [tagKey: string]: string[] };
+  currentTags: [string, string][];
 }
 
 export function AddTagModal({
@@ -17,6 +19,7 @@ export function AddTagModal({
   closeModal,
   existingTags,
   fullnames,
+  currentTags,
 }: IAddTagModalProps) {
   const firstElementRef = useRef<HTMLInputElement>(null);
 
@@ -32,10 +35,14 @@ export function AddTagModal({
   const onButtonClick = useCallback(() => {
     setUpdating(true);
     onAddTags(fullnames, tagKey, tagValue)
-      .then(closeModal)
+      .then(() => {
+        setTagKey("");
+        setTagValue("");
+        firstElementRef.current?.focus();
+      })
       .catch(console.error)
       .finally(() => setUpdating(false));
-  }, [closeModal, fullnames, tagKey, tagValue]);
+  }, [fullnames, tagKey, tagValue]);
 
   return (
     <Modal
@@ -59,17 +66,23 @@ export function AddTagModal({
             tagValue={tagValue}
             ref={firstElementRef}
           />
-          <div className="w-full">
-            <Button
-              disabled={!isSubmitEnabled}
-              isProcessing={updating}
-              onClick={onButtonClick}
-            >
-              {updating ? "Adding..." : "Add"}
-            </Button>
-          </div>
+          <Tags tags={currentTags} />
         </div>
       </Modal.Body>
+      <Modal.Footer>
+        <div className="w-full justify-end flex gap-4">
+          <Button
+            disabled={!isSubmitEnabled}
+            isProcessing={updating}
+            onClick={onButtonClick}
+          >
+            {updating ? "Adding..." : "Add"}
+          </Button>
+          <Button disabled={updating} color="gray" onClick={closeModal}>
+            Close
+          </Button>
+        </div>
+      </Modal.Footer>
     </Modal>
   );
 }

@@ -8,9 +8,11 @@ import { AddTagModal } from './AddTagModal';
 export function TagSingleEntry({
   existingTags,
   fileFullName,
+  tags,
 }: {
   fileFullName: string;
   existingTags: { [tagKey: string]: string[] };
+  tags: [string, string][];
 }) {
   const [isModalOpened, setModalOpened] = useState(false);
 
@@ -27,6 +29,7 @@ export function TagSingleEntry({
         isModalOpened={isModalOpened}
         existingTags={existingTags}
         fullnames={fullnames}
+        currentTags={tags}
       />
     </>
   );

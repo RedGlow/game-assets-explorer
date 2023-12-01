@@ -81,6 +81,7 @@ export function Entry({
           <TagSingleEntry
             existingTags={existingTags}
             fileFullName={entry.fullName}
+            tags={tags[entry.fullName] || []}
           />
           {getName(entry.fullName)}
         </div>

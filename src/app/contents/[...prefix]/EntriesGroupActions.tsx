@@ -1,6 +1,9 @@
 import { Button, Modal } from 'flowbite-react';
-import { ElementType, useCallback, useMemo, useRef } from 'react';
+import flatten from 'lodash-es/flatten';
+import uniqBy from 'lodash-es/uniqBy';
+import { useCallback, useMemo } from 'react';
 
+import { ITags } from '@/lib/tags';
 import { useBoolean } from '@/lib/use-boolean';
 
 import { AddTagModal } from './AddTagModal';
@@ -10,11 +13,13 @@ import { onDeleteTags } from './on-delete-tag';
 export interface IEntriesGroupActionsProps {
   selectedEntries: SelectedEntries;
   existingTags: { [tagKey: string]: string[] };
+  tags: ITags;
 }
 
 export function EntriesGroupActions({
   selectedEntries,
   existingTags,
+  tags,
 }: IEntriesGroupActionsProps) {
   const [groupTagOpened, { setTrue: onGroupTag, setFalse: closeGroupTag }] =
     useBoolean(false);
@@ -22,6 +27,15 @@ export function EntriesGroupActions({
   const fullNames = useMemo(
     () => Object.keys(selectedEntries).filter((key) => selectedEntries[key]),
     [selectedEntries]
+  );
+
+  const allTags = useMemo(
+    () =>
+      uniqBy(
+        flatten(fullNames.map((fullname) => tags[fullname] || [])),
+        ([k, v]) => `${k}:${v}`
+      ),
+    [fullNames, tags]
   );
 
   return (
@@ -34,6 +48,7 @@ export function EntriesGroupActions({
         isModalOpened={groupTagOpened}
         existingTags={existingTags}
         fullnames={fullNames}
+        currentTags={allTags}
       />
 
       <ClearTagsButton fullNames={fullNames} />
