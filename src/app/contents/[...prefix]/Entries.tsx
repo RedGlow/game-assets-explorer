@@ -130,8 +130,9 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
         <Table.Body className="divide-y">
           {dirEntries.map((entry) => (
             <Table.Row key={entry.fullName}>
-              <Table.Cell className="w-8" />
-              <Table.Cell>
+              <Table.Cell className="p-4 w-16" />
+              <Table.Cell className="px-0 py-4 w-20" />
+              <Table.Cell className="pl-2">
                 <div className="flex items-center gap-2">
                   <HiFolder />
                   <Link
