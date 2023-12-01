@@ -2,6 +2,8 @@ import { Button, Modal } from 'flowbite-react';
 import flatten from 'lodash-es/flatten';
 import uniqBy from 'lodash-es/uniqBy';
 import { useCallback, useMemo } from 'react';
+import { HiTag } from 'react-icons/hi';
+import { IoIosRemoveCircle } from 'react-icons/io';
 
 import { ITags } from '@/lib/tags';
 import { useBoolean } from '@/lib/use-boolean';
@@ -41,6 +43,7 @@ export function EntriesGroupActions({
   return (
     <div className="flex gap-2">
       <Button size="xs" onClick={onGroupTag} disabled={fullNames.length === 0}>
+        <HiTag className="mr-1" />
         Group tag
       </Button>
       <AddTagModal
@@ -73,6 +76,7 @@ function ClearTagsButton({ fullNames }: { fullNames: string[] }) {
   return (
     <>
       <Button size="xs" onClick={openModal} disabled={fullNames.length === 0}>
+        <IoIosRemoveCircle className="mr-2" />
         Clear tags
       </Button>
       <Modal show={opened} dismissible={!working} onClose={closeModal}>
