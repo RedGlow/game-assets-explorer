@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache';
 
 import { tagFile, tagFiles } from '@/lib/tags';
 
-import { getInvalidatePath } from './get-invalidate-path';
+import { getInvalidatePath } from '../../app/contents/[...prefix]/get-invalidate-path';
 
 export async function onAddTag(
   fullName: string,

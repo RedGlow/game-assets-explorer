@@ -1,6 +1,8 @@
 import groupBy from 'lodash-es/groupBy';
 import mapValues from 'lodash-es/mapValues';
 
+import { Prisma } from '@prisma/client';
+
 import { getter } from '../getter';
 import prisma from '../prisma';
 
@@ -90,4 +92,48 @@ export async function getExistingTags() {
   const grouped = groupBy(results, getter("tagKey"));
   const map = mapValues(grouped, (values) => values.map(getter("tagValue")));
   return map;
+}
+
+export async function search(
+  hasTags: [string, string][],
+  hasntTags: [string, string][],
+  contains?: string
+) {
+  const results = await prisma.taggedFile.findMany({
+    where: {
+      AND: hasntTags
+        .map(
+          ([k, v]) =>
+            ({
+              NOT: {
+                tagKey: k,
+                tagValue: v === "*" ? undefined : v,
+              },
+            } as Prisma.TaggedFileWhereInput)
+        )
+        .concat(
+          hasTags.map(
+            ([k, v]) =>
+              ({
+                tagKey: k,
+                tagValue: v === "*" ? undefined : v,
+              } as Prisma.TaggedFileWhereInput)
+          )
+        )
+        .concat(
+          contains
+            ? ({
+                fileFullName: {
+                  contains,
+                },
+              } as Prisma.TaggedFileWhereInput)
+            : []
+        ),
+    },
+    distinct: ["fileFullName"],
+    select: {
+      fileFullName: true,
+    },
+  });
+  return results.map((result) => result.fileFullName);
 }

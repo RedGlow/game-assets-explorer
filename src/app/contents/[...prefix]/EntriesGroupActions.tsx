@@ -10,7 +10,7 @@ import { useBoolean } from '@/lib/use-boolean';
 
 import { AddTagModal } from './AddTagModal';
 import { SelectedEntries } from './Entry';
-import { onDeleteTags } from './on-delete-tag';
+import { onDeleteTags } from '../../../lib/actions/on-delete-tag';
 
 export interface IEntriesGroupActionsProps {
   selectedEntries: SelectedEntries;

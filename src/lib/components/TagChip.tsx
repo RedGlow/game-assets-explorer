@@ -4,8 +4,6 @@ import { useCallback, useState } from 'react';
 import { AiOutlineLoading } from 'react-icons/ai';
 import { HiOutlineX } from 'react-icons/hi';
 
-import { onDeleteTag } from './on-delete-tag';
-
 const colorNames = [
   "indigo",
   "purple",
@@ -41,26 +39,39 @@ interface ITagChipProps {
   tagKey: string;
   tagValue: string;
   fullName?: string;
+  onDelete?(
+    fullName: string,
+    tagKey: string,
+    tagValue: string
+  ): Promise<void> | null;
 }
 
-export function TagChip({ tagKey, tagValue, fullName }: ITagChipProps) {
+export function TagChip({
+  tagKey,
+  tagValue,
+  fullName,
+  onDelete,
+}: ITagChipProps) {
   const [processing, setProcessing] = useState(false);
 
   const onClick = useCallback(() => {
-    if (!fullName) {
+    if (!onDelete) {
       return;
     }
     setProcessing(true);
-    onDeleteTag(fullName, tagKey, tagValue)
-      .catch(console.error)
-      .finally(() => setProcessing(false));
-  }, [fullName, tagKey, tagValue]);
+    const promise = onDelete(fullName || "", tagKey, tagValue);
+    if (promise) {
+      promise.catch(console.error).finally(() => setProcessing(false));
+    } else {
+      setProcessing(false);
+    }
+  }, [fullName, onDelete, tagKey, tagValue]);
 
   return (
     <Badge key={`${tagKey}-${tagValue}`} color={getColor(tagKey)}>
       <div className="flex whitespace-nowrap flex-nowrap items-center gap-2">
-        {tagKey}: {tagValue}
-        {!processing && !!fullName ? (
+        {tagKey}:{tagValue}
+        {!processing && !!onDelete ? (
           <HiOutlineX onClick={onClick} />
         ) : !!fullName ? (
           <AiOutlineLoading className="animate-spin" />

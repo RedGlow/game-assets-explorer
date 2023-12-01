@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 import { removeTag, removeTags } from '@/lib/tags';
 
-import { getInvalidatePath } from './get-invalidate-path';
+import { getInvalidatePath } from '../../app/contents/[...prefix]/get-invalidate-path';
 
 export async function onDeleteTag(
   fullName: string,

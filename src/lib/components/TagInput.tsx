@@ -2,36 +2,53 @@ import { Label, TextInput } from 'flowbite-react';
 import { ChangeEvent, forwardRef, KeyboardEvent, useCallback, useRef, useState } from 'react';
 
 export interface ITagInputProps {
+  id?: string;
   tagKey: string;
   setTagKey(newTagKey: string): void;
   tagValue: string;
   setTagValue(newTagValue: string): void;
   existingTags: { [tagKey: string]: string[] };
+  allowAnyValue?: boolean;
 }
 
 export const TagInput = forwardRef<HTMLInputElement, ITagInputProps>(
   function TagInput(
-    { tagKey, setTagKey, setTagValue, tagValue, existingTags },
+    {
+      id,
+      tagKey,
+      setTagKey,
+      setTagValue,
+      tagValue,
+      existingTags,
+      allowAnyValue,
+    },
     ref
   ) {
+    const tagKeySuggestions = existingTags
+      ? Object.getOwnPropertyNames(existingTags)
+      : [];
+
+    const tagValueSuggestions = (existingTags[tagKey] || []).concat(
+      allowAnyValue ? "*" : ""
+    );
+
     return (
       <div className="flex gap-4 w-full">
         <FormElement
-          id="tag-key"
+          id={`${id ? id + "-" : ""}tag-key`}
           ref={ref}
           label="Key"
           value={tagKey}
           onChange={setTagKey}
-          suggestions={
-            existingTags ? Object.getOwnPropertyNames(existingTags) : []
-          }
+          suggestions={tagKeySuggestions}
         />
         <FormElement
-          id="tag-value"
+          id={`${id ? id + "-" : ""}tag-value`}
           label="Value"
+          sublabel={allowAnyValue ? "An * means any value" : ""}
           value={tagValue}
           onChange={setTagValue}
-          suggestions={existingTags[tagKey] || []}
+          suggestions={tagValueSuggestions}
         />
       </div>
     );
@@ -41,13 +58,17 @@ export const TagInput = forwardRef<HTMLInputElement, ITagInputProps>(
 interface IFormElementProps {
   id: string;
   label: string;
+  sublabel?: string;
   value: string;
   onChange(newValue: string): void;
   suggestions: string[];
 }
 
 const FormElement = forwardRef<HTMLInputElement, IFormElementProps>(
-  function FormElement({ id, label, value, onChange, suggestions }, ref) {
+  function FormElement(
+    { id, label, sublabel, value, onChange, suggestions },
+    ref
+  ) {
     const textInputOnChange = useCallback(
       (event: ChangeEvent<HTMLInputElement>) => onChange(event.target.value),
       [onChange]
@@ -68,8 +89,6 @@ const FormElement = forwardRef<HTMLInputElement, IFormElementProps>(
 
     const onKeyDown = useCallback(
       (e: KeyboardEvent<HTMLInputElement>) => {
-        // ArrowDown, ArrowUp, Enter
-        console.log(e.code);
         switch (e.code) {
           case "ArrowDown":
             setSelectedSuggestionsIndex(
@@ -108,7 +127,7 @@ const FormElement = forwardRef<HTMLInputElement, IFormElementProps>(
         <TextInput
           id={id}
           ref={ref}
-          placeholder=""
+          placeholder={sublabel}
           value={value}
           onChange={textInputOnChange}
           onFocus={onFocus}
@@ -129,7 +148,7 @@ const FormElement = forwardRef<HTMLInputElement, IFormElementProps>(
               <li
                 key={s}
                 className={`p-2 ${
-                  i == selectedSuggestionsIndex && " bg-slate-100"
+                  i == selectedSuggestionsIndex ? " bg-slate-100" : ""
                 }`}
               >
                 {s}

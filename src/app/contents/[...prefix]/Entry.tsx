@@ -2,6 +2,8 @@ import { Checkbox, Table } from 'flowbite-react';
 import { ChangeEvent, useCallback } from 'react';
 import { HiOutlineDocument } from 'react-icons/hi';
 
+import { onDeleteTag } from '@/lib/actions/on-delete-tag';
+import { Tags } from '@/lib/components/Tags';
 import { getExtension } from '@/lib/get-extension';
 import { ITags } from '@/lib/tags';
 
@@ -9,7 +11,6 @@ import { AudioPreview } from './AudioPreview';
 import { IContentsEntry } from './contents.types';
 import { Download } from './Download';
 import { ImagePreview } from './ImagePreview';
-import { Tags } from './Tags';
 import { TagSingleEntry } from './TagSingleEntry';
 
 const audioExtensions = ["ogg", "mp3", "wav"];
@@ -92,6 +93,7 @@ export function Entry({
         <Tags
           fullName={entry.fullName}
           tags={getTagsString(tags, entry.fullName)}
+          onDelete={onDeleteTag}
         />
       </Table.Cell>
     </Table.Row>

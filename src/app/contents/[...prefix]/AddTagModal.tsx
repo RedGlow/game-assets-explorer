@@ -1,10 +1,10 @@
 "use client";
-import { Button, Label, Modal, TextInput } from 'flowbite-react';
-import { ChangeEvent, forwardRef, KeyboardEvent, useCallback, useRef, useState } from 'react';
+import { Button, Modal } from 'flowbite-react';
+import { useCallback, useRef, useState } from 'react';
 
-import { onAddTags } from './on-add-tag';
-import { TagInput } from './TagInput';
-import { Tags } from './Tags';
+import { onAddTags } from '@/lib/actions/on-add-tag';
+import { TagInput } from '@/lib/components/TagInput';
+import { Tags } from '@/lib/components/Tags';
 
 export interface IAddTagModalProps {
   fullnames: string[];

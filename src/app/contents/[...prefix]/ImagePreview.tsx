@@ -43,14 +43,12 @@ export function ImagePreview({ fullname }: { fullname: string }) {
   const listenerData = useRef<(() => void) | null>(null);
   const onImgRef = (img: HTMLImageElement) => {
     if (img) {
-      console.log("add listener!");
       const handler = (ev: WheelEvent) => {
         setImageZoom((z) => Math.max(0.5, Math.min(3, z - ev.deltaY / 1000)));
         ev.preventDefault();
       };
       img.addEventListener("wheel", handler);
       listenerData.current = () => {
-        console.log("cleanup listener!");
         img.removeEventListener("wheel", handler);
       };
     } else if (listenerData.current !== null) {
