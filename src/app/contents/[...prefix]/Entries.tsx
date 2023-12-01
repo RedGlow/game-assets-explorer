@@ -97,7 +97,7 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
           tags={tags}
         />
       </div>
-      <Table className="table-fixed">
+      <Table className="w-full">
         <Table.Head>
           <Table.HeadCell className="p-4 w-16">
             <Checkbox onChange={onToggleAllCheckboxClicked} />
