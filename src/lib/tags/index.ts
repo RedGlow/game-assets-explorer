@@ -1,5 +1,6 @@
 import groupBy from 'lodash-es/groupBy';
 import mapValues from 'lodash-es/mapValues';
+import omitBy from 'lodash-es/omitBy';
 
 import { Prisma } from '@prisma/client';
 
@@ -99,41 +100,78 @@ export async function search(
   hasntTags: [string, string][],
   contains?: string
 ) {
-  const results = await prisma.taggedFile.findMany({
-    where: {
-      AND: hasntTags
-        .map(
-          ([k, v]) =>
-            ({
-              NOT: {
-                tagKey: k,
-                tagValue: v === "*" ? undefined : v,
-              },
-            } as Prisma.TaggedFileWhereInput)
-        )
-        .concat(
-          hasTags.map(
-            ([k, v]) =>
-              ({
-                tagKey: k,
-                tagValue: v === "*" ? undefined : v,
-              } as Prisma.TaggedFileWhereInput)
-          )
-        )
-        .concat(
-          contains
-            ? ({
-                fileFullName: {
-                  contains,
-                },
-              } as Prisma.TaggedFileWhereInput)
-            : []
-        ),
-    },
-    distinct: ["fileFullName"],
-    select: {
-      fileFullName: true,
-    },
-  });
-  return results.map((result) => result.fileFullName);
+  const getIncludedFiles = async () =>
+    (
+      await prisma.taggedFile.findMany({
+        where: {
+          AND: hasTags
+            .map(
+              ([k, v]) =>
+                ({
+                  tagKey: k,
+                  tagValue: v === "*" ? undefined : v,
+                } as Prisma.TaggedFileWhereInput)
+            )
+            .concat(
+              contains
+                ? ({
+                    fileFullName: {
+                      contains,
+                    },
+                  } as Prisma.TaggedFileWhereInput)
+                : []
+            ),
+        },
+        distinct: ["fileFullName"],
+        select: {
+          fileFullName: true,
+        },
+      })
+    ).map((v) => v.fileFullName);
+
+  const getExcludedFiles = async () =>
+    hasntTags.length == 0
+      ? []
+      : (
+          await prisma.taggedFile.findMany({
+            where: {
+              AND: hasntTags.map(
+                ([k, v]) =>
+                  ({
+                    tagKey: k,
+                    tagValue: v === "*" ? undefined : v,
+                  } as Prisma.TaggedFileWhereInput)
+              ),
+            },
+            distinct: ["fileFullName"],
+            select: {
+              fileFullName: true,
+            },
+          })
+        ).map((v) => v.fileFullName);
+
+  const getAllBut = (fullnames: string[]) =>
+    prisma.taggedFile
+      .findMany({
+        where: {
+          fileFullName: {
+            notIn: fullnames,
+          },
+        },
+      })
+      .then((files) => files.map((files) => files.fileFullName));
+
+  if (hasTags.length == 0 && !contains) {
+    // we only have an exclusion list
+    const excludedResults = await getExcludedFiles();
+    const results = getAllBut(excludedResults);
+    return results;
+  } else {
+    const includedResults = await getIncludedFiles();
+    const excludedResults = await getExcludedFiles();
+    const results = includedResults.filter(
+      (r) => excludedResults.indexOf(r) < 0
+    );
+    return results;
+  }
 }
