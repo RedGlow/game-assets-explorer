@@ -99,10 +99,11 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
       </div>
       <Table className="table-fixed">
         <Table.Head>
-          <Table.HeadCell className="p-4 w-8">
+          <Table.HeadCell className="p-4 w-16">
             <Checkbox onChange={onToggleAllCheckboxClicked} />
           </Table.HeadCell>
-          <Table.HeadCell>
+          <Table.HeadCell className="px-0 py-4 w-20" />
+          <Table.HeadCell className="pl-2">
             <div className="flex items-center gap-2">
               name{" "}
               <SortButton
@@ -124,9 +125,7 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
               />
             </div>
           </Table.HeadCell>
-          <Table.HeadCell>
-            tags
-          </Table.HeadCell>
+          <Table.HeadCell>tags</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
           {dirEntries.map((entry) => (

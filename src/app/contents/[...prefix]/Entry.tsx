@@ -56,7 +56,7 @@ export function Entry({
 
   return (
     <Table.Row>
-      <Table.Cell className="w-8">
+      <Table.Cell className="p-4 w-16">
         <Checkbox
           id={`selected-${entry.fullName}`}
           checked={
@@ -66,8 +66,8 @@ export function Entry({
           className="mr-2"
         />
       </Table.Cell>
-      <Table.Cell>
-        <div className="flex items-center gap-2">
+      <Table.Cell className="px-0 py-4 w-20">
+        <div className="flex items-center justify-end gap-2">
           <Download fullname={entry.fullName} />
           <span className="mr-2">
             {isAudio ? (
@@ -83,8 +83,10 @@ export function Entry({
             fileFullName={entry.fullName}
             tags={tags[entry.fullName] || []}
           />
-          {getName(entry.fullName)}
         </div>
+      </Table.Cell>
+      <Table.Cell className="pl-2">
+        <div className="flex items-center gap-2">{getName(entry.fullName)}</div>
       </Table.Cell>
       <Table.Cell>
         <Tags
