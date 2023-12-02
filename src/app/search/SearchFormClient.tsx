@@ -102,7 +102,12 @@ export function SearchFormClient({
       </form>
       {entries.length > 0 && (
         <div className="my-12">
-          <Entries entries={entries} existingTags={existingTags} tags={tags} />
+          <Entries
+            entries={entries}
+            existingTags={existingTags}
+            tags={tags}
+            editDisabled
+          />
         </div>
       )}
     </div>

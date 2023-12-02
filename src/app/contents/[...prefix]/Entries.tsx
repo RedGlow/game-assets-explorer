@@ -10,7 +10,7 @@ import { ITags } from '@/lib/tags';
 
 import { IContentsEntry } from './contents.types';
 import { EntriesGroupActions } from './EntriesGroupActions';
-import { EntriesSorting, SortButton, SortBy } from './EntriesSorting';
+import { SortButton, SortBy } from './EntriesSorting';
 import { Entry, SelectedEntries } from './Entry';
 
 export interface IEntriesClient {
@@ -19,9 +19,15 @@ export interface IEntriesClient {
     [x: string]: string[];
   };
   tags: ITags;
+  editDisabled?: boolean;
 }
 
-export function Entries({ entries, existingTags, tags }: IEntriesClient) {
+export function Entries({
+  entries,
+  existingTags,
+  tags,
+  editDisabled,
+}: IEntriesClient) {
   const [nameAscending, setNameAscending] = useState(true);
   const [extensionAscending, setExtensionAscending] = useState(true);
   const [sortBy, setSortBy] = useState<SortBy>("name");
@@ -90,19 +96,23 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
 
   return (
     <>
-      <div className="flex gap-16 items-center mt-2 mb-2">
-        <EntriesGroupActions
-          selectedEntries={selectedEntries}
-          existingTags={existingTags}
-          tags={tags}
-        />
-      </div>
+      {!editDisabled && (
+        <div className="flex gap-16 items-center mt-2 mb-2">
+          <EntriesGroupActions
+            selectedEntries={selectedEntries}
+            existingTags={existingTags}
+            tags={tags}
+          />
+        </div>
+      )}
       <Table className="w-full">
         <Table.Head>
-          <Table.HeadCell className="p-4 w-16">
-            <Checkbox onChange={onToggleAllCheckboxClicked} />
-          </Table.HeadCell>
-          <Table.HeadCell className="px-0 py-4 w-20" />
+          {!editDisabled && (
+            <Table.HeadCell className="px-2 py-4 w-4">
+              <Checkbox onChange={onToggleAllCheckboxClicked} />
+            </Table.HeadCell>
+          )}
+          <Table.HeadCell className="px-2 py-4 w-20" />
           <Table.HeadCell className="pl-2">
             <div className="flex items-center gap-2">
               name{" "}
@@ -154,6 +164,7 @@ export function Entries({ entries, existingTags, tags }: IEntriesClient) {
               tags={tags}
               selectedEntries={selectedEntries}
               setEntrySelection={setEntrySelection}
+              editDisabled={editDisabled}
             />
           ))}
         </Table.Body>

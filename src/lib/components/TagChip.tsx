@@ -71,11 +71,12 @@ export function TagChip({
     <Badge key={`${tagKey}-${tagValue}`} color={getColor(tagKey)}>
       <div className="flex whitespace-nowrap flex-nowrap items-center gap-2">
         {tagKey}:{tagValue}
-        {!processing && !!onDelete ? (
-          <HiOutlineX onClick={onClick} />
-        ) : !!fullName ? (
-          <AiOutlineLoading className="animate-spin" />
-        ) : null}
+        {!!onDelete &&
+          (!processing ? (
+            <HiOutlineX onClick={onClick} />
+          ) : !!fullName ? (
+            <AiOutlineLoading className="animate-spin" />
+          ) : null)}
       </div>
     </Badge>
   );

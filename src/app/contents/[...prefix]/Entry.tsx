@@ -32,6 +32,7 @@ export interface IEntryProps {
     isSelected: boolean,
     isGroupOperation: boolean
   ): void;
+  editDisabled?: boolean;
 }
 
 export function Entry({
@@ -40,6 +41,7 @@ export function Entry({
   tags,
   selectedEntries,
   setEntrySelection,
+  editDisabled,
 }: IEntryProps) {
   const extension = getExtension(entry.fullName);
   const isAudio =
@@ -57,17 +59,20 @@ export function Entry({
 
   return (
     <Table.Row>
-      <Table.Cell className="p-4 w-16">
-        <Checkbox
-          id={`selected-${entry.fullName}`}
-          checked={
-            entry.fullName in selectedEntries && selectedEntries[entry.fullName]
-          }
-          onChange={onSelectionChanged}
-          className="mr-2"
-        />
-      </Table.Cell>
-      <Table.Cell className="px-0 py-4 w-20">
+      {!editDisabled && (
+        <Table.Cell className="px-2 py-4 w-4">
+          <Checkbox
+            id={`selected-${entry.fullName}`}
+            checked={
+              entry.fullName in selectedEntries &&
+              selectedEntries[entry.fullName]
+            }
+            onChange={onSelectionChanged}
+            className="mr-2"
+          />
+        </Table.Cell>
+      )}
+      <Table.Cell className="px-2 py-4 w-20">
         <div className="flex items-center justify-end gap-2">
           <Download fullname={entry.fullName} />
           <span className="mr-2">
@@ -79,11 +84,13 @@ export function Entry({
               <HiOutlineDocument />
             )}
           </span>
-          <TagSingleEntry
-            existingTags={existingTags}
-            fileFullName={entry.fullName}
-            tags={tags[entry.fullName] || []}
-          />
+          {!editDisabled && (
+            <TagSingleEntry
+              existingTags={existingTags}
+              fileFullName={entry.fullName}
+              tags={tags[entry.fullName] || []}
+            />
+          )}
         </div>
       </Table.Cell>
       <Table.Cell className="pl-2">
@@ -93,7 +100,7 @@ export function Entry({
         <Tags
           fullName={entry.fullName}
           tags={getTagsString(tags, entry.fullName)}
-          onDelete={onDeleteTag}
+          onDelete={editDisabled ? undefined : onDeleteTag}
         />
       </Table.Cell>
     </Table.Row>
