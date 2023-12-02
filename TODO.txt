@@ -1,0 +1,17 @@
+ora la explain della ricerca fornisce:
+
+postgres=> explain SELECT "public"."TaggedFile"."tagKey", "public"."TaggedFile"."tagValue", "public"."TaggedFile"."fileFullName" FROM "public"."TaggedFile" WHERE "public"."TaggedFile"."fileFullName" ILIKE '%tileMap%';
+                          QUERY PLAN
+--------------------------------------------------------------
+ Seq Scan on "TaggedFile"  (cost=0.00..6.76 rows=47 width=81)
+   Filter: ("fileFullName" ~~* '%tileMap%'::text)
+(2 rows)
+
+
+verificare quando ci sono più righe per vedere se si attiva l'indice trgm TaggedFile_fullname
+
+ragionamento sugli indici basato su come li usiamo in search:
+- trgm su filenames per la ricerca case insensitive
+- hash su tagKey nei casi in cui cerchiamo roba tipo type:* (facciamo solo confronti con =)
+- btree su tagKey+tagValue nei casi in cui cerchiamo roba tipo type:tileset (facciamo solo confronti con =, ma hash non supporta più colonne)
+- hash su filenames quando raffiniamo la ricerca con i criteri di esclusione ("quali file devo escludere <da questa lista di file>?")
