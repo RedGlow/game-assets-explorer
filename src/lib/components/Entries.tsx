@@ -86,7 +86,11 @@ export function Entries({
     (e: ChangeEvent<HTMLInputElement>) => {
       setSelectedEntries(
         e.target.checked
-          ? fromPairs(entries.map((e) => [e.fullName, true]))
+          ? fromPairs(
+              entries
+                .filter((e) => e.kind === "file")
+                .map((e) => [e.fullName, true])
+            )
           : {}
       );
       setLastSelectionOperationIndex(-1);
