@@ -32,7 +32,7 @@ export const TagInput = forwardRef<HTMLInputElement, ITagInputProps>(
       : [];
 
     const tagValueSuggestions = (existingTags[tagKey] || []).concat(
-      allowAnyValue ? "*" : ""
+      allowAnyValue ? ["*"] : []
     );
 
     return (
