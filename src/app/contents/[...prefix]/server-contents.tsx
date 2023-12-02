@@ -2,9 +2,9 @@ import { getEntries } from '@/lib/s3';
 import { getExistingTags, getTags } from '@/lib/tags';
 import { ListObjectsV2CommandOutput } from '@aws-sdk/client-s3';
 
+import { IContentsEntry, IServerContentsProps } from '../../../lib/components/contents.types';
+import { Entries } from '../../../lib/components/Entries';
 import { Breadcrumb } from './Breadcrumb';
-import { IContentsEntry, IServerContentsProps } from './contents.types';
-import { Entries } from './Entries';
 
 function listObjectsToEntries(
   entries: ListObjectsV2CommandOutput

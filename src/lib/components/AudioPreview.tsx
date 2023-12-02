@@ -2,10 +2,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FaPause, FaPlay } from 'react-icons/fa';
 
+import { createPresignedUrl } from '@/lib/actions/create-presigned-url';
 import { Loading } from '@/lib/components/Loading';
 import { useBoolean } from '@/lib/use-boolean';
-
-import { createPresignedUrl } from './create-presigned-url';
 
 enum PlayState {
   Playing,

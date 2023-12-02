@@ -1,7 +1,5 @@
 import { ITags } from '@/lib/tags';
 
-import { SortBy, SortOrders } from './EntriesSorting';
-
 export interface IContentsEntryDirectory {
   kind: "directory";
   fullName: string; // e.g.: "Kenney/3D assets/"

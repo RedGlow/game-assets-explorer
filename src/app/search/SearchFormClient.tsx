@@ -6,8 +6,8 @@ import { HiOutlineSearch } from 'react-icons/hi';
 import { ITags } from '@/lib/tags';
 import { useBoolean } from '@/lib/use-boolean';
 
-import { IContentsEntry } from '../contents/[...prefix]/contents.types';
-import { Entries } from '../contents/[...prefix]/Entries';
+import { IContentsEntry } from '../../lib/components/contents.types';
+import { Entries } from '../../lib/components/Entries';
 import { TagSelector } from './TagSelector';
 
 import type { ISearchBody } from "../api/search/route";

@@ -3,10 +3,9 @@ import last from 'lodash-es/last';
 import { useCallback, useRef, useState } from 'react';
 import { HiDownload } from 'react-icons/hi';
 
+import { createPresignedUrl } from '@/lib/actions/create-presigned-url';
 import { Loading } from '@/lib/components/Loading';
 import { useBoolean } from '@/lib/use-boolean';
-
-import { createPresignedUrl } from './create-presigned-url';
 
 export function Download({ fullname }: { fullname: string }) {
   const [url, setUrl] = useState<string | null>(null);

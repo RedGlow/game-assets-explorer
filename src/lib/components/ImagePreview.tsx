@@ -5,10 +5,9 @@ import { useCallback, useReducer, useRef, useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { MdImageSearch } from 'react-icons/md';
 
+import { createPresignedUrl } from '@/lib/actions/create-presigned-url';
 import { Loading } from '@/lib/components/Loading';
 import { useBoolean } from '@/lib/use-boolean';
-
-import { createPresignedUrl } from './create-presigned-url';
 
 export function ImagePreview({ fullname }: { fullname: string }) {
   const [working, { setTrue: startWorking, setFalse: stopWorking }] =

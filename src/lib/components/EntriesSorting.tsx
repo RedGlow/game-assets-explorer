@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from 'flowbite-react';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { HiArrowSmDown, HiArrowSmUp } from 'react-icons/hi';
 
 export type SortBy = "name" | "extension";
