@@ -112,6 +112,7 @@ const FormElement = forwardRef<HTMLInputElement, IFormElementProps>(
 
     // whether suggestions should be opened and at what index
     const [suggestionsOpened, setSuggestionsOpened] = useState(false);
+    // const suggestionsOpened = true;
     const [selectedSuggestionsIndex, setSelectedSuggestionsIndex] =
       useState(-1);
     const { onBlur, onFocus } = useFormElementSuggestions(
@@ -121,12 +122,19 @@ const FormElement = forwardRef<HTMLInputElement, IFormElementProps>(
 
     const { measureRef, width } = useInputWidth();
 
+    const chooseSuggestion = useCallback(
+      (index: number) => {
+        onChange(suggestions[index]);
+        setSuggestionsOpened(false);
+      },
+      [onChange, suggestions]
+    );
+
     const onKeyDown = useKeyDown(
       selectedSuggestionsIndex,
       setSelectedSuggestionsIndex,
-      setSuggestionsOpened,
       suggestions,
-      onChange,
+      chooseSuggestion,
       tabOn,
       tabFocus,
       onEnter
@@ -178,14 +186,13 @@ const FormElement = forwardRef<HTMLInputElement, IFormElementProps>(
           >
             {suggestions.length > 0 ? (
               suggestions.map((s, i) => (
-                <li
+                <Suggestion
                   key={s}
-                  className={`p-2 ${
-                    i == selectedSuggestionsIndex ? " bg-slate-100" : ""
-                  }`}
-                >
-                  {s}
-                </li>
+                  label={s}
+                  index={i}
+                  selectedSuggestionsIndex={selectedSuggestionsIndex}
+                  chooseSuggestion={chooseSuggestion}
+                />
               ))
             ) : (
               <li className="text-gray-400 p-2">no suggestions</li>
@@ -197,19 +204,46 @@ const FormElement = forwardRef<HTMLInputElement, IFormElementProps>(
   }
 );
 
+function Suggestion({
+  label,
+  index,
+  selectedSuggestionsIndex,
+  chooseSuggestion,
+}: {
+  label: string;
+  index: number;
+  selectedSuggestionsIndex: number;
+  chooseSuggestion: (index: number) => void;
+}) {
+  const onClick = useCallback(() => {
+    console.log("click sugg n. " + index);
+    chooseSuggestion(index);
+  }, [chooseSuggestion, index]);
+
+  return (
+    <li className={index == selectedSuggestionsIndex ? "bg-slate-100" : ""}>
+      <button
+        tabIndex={-1}
+        onClick={onClick}
+        className="p-2 w-full text-left hover:bg-slate-100 h-full"
+      >
+        {label}
+      </button>
+    </li>
+  );
+}
+
 function useKeyDown(
   selectedSuggestionsIndex: number,
   setSelectedSuggestionsIndex: (newValue: number) => void,
-  setSuggestionsOpened: (newValue: boolean) => void,
   suggestions: string[],
-  onChange: (newValue: string) => void,
+  chooseSuggestion: (index: number) => void,
   tabOn?: string,
   tabFocus?: RefObject<HTMLInputElement>,
   confirm?: () => void
 ) {
   return useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
-      console.log(e.code);
       switch (e.code) {
         case "Semicolon":
           if (tabOn && tabFocus && tabFocus.current) {
@@ -238,20 +272,18 @@ function useKeyDown(
         }
         case "Enter":
           if (selectedSuggestionsIndex != -1) {
-            onChange(suggestions[selectedSuggestionsIndex]);
-            setSuggestionsOpened(false);
+            chooseSuggestion(selectedSuggestionsIndex);
           } else if (confirm) {
             confirm();
           }
       }
     },
     [
+      chooseSuggestion,
       confirm,
-      onChange,
       selectedSuggestionsIndex,
       setSelectedSuggestionsIndex,
-      setSuggestionsOpened,
-      suggestions,
+      suggestions.length,
       tabFocus,
       tabOn,
     ]
@@ -274,7 +306,7 @@ function useFormElementSuggestions(
   }, [setSelectedSuggestionsIndex, setSuggestionsOpened]);
 
   const onBlur = useCallback(
-    () => setSuggestionsOpened(false),
+    () => setTimeout(() => setSuggestionsOpened(false), 100),
     [setSuggestionsOpened]
   );
 
