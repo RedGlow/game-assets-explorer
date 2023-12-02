@@ -4,13 +4,13 @@ import { ChangeEvent, useCallback, useState } from 'react';
 import { HiOutlineSearch } from 'react-icons/hi';
 
 import { ITags } from '@/lib/tags';
+import { useBoolean } from '@/lib/use-boolean';
 
 import { IContentsEntry } from '../contents/[...prefix]/contents.types';
 import { Entries } from '../contents/[...prefix]/Entries';
 import { TagSelector } from './TagSelector';
 
 import type { ISearchBody } from "../api/search/route";
-
 export function SearchFormClient({
   existingTags,
 }: {
@@ -30,7 +30,11 @@ export function SearchFormClient({
   const [entries, setEntries] = useState<IContentsEntry[]>([]);
   const [tags, setTags] = useState<ITags>({});
 
+  const [working, { setTrue: startWorking, setFalse: stopWorking }] =
+    useBoolean(false);
+
   const onSearch = useCallback(() => {
+    startWorking();
     fetch("/api/search", {
       method: "POST",
       headers: {
@@ -54,8 +58,9 @@ export function SearchFormClient({
           }))
         );
       })
-      .catch(console.error);
-  }, [contains, excludedTags, includedTags]);
+      .catch(console.error)
+      .finally(stopWorking);
+  }, [contains, excludedTags, includedTags, startWorking, stopWorking]);
 
   return (
     <div>
@@ -96,7 +101,9 @@ export function SearchFormClient({
             />
           </div>
           <div className="col-span-2 flex justify-start">
-            <Button onClick={onSearch}>Search</Button>
+            <Button onClick={onSearch} isProcessing={working}>
+              Search
+            </Button>
           </div>
         </div>
       </form>
