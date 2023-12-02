@@ -32,7 +32,7 @@ export function TagSelector({
   const onDeleteTag = useCallback(
     (_: string, tagKey: string, tagValue: string): Promise<void> | null => {
       setTags((currTags) =>
-        currTags.filter(([v, k]) => v != tagKey && k != tagValue)
+        currTags.filter(([v, k]) => v != tagKey || k != tagValue)
       );
       return null;
     },
