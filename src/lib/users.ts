@@ -1,11 +1,6 @@
-import prisma from "./prisma";
-
 export async function isAllowed(email: string) {
-  // const u = await prisma.allowedUsers.findUnique({
-  //   where: {
-  //     email,
-  //   },
-  // });
-  // return !!u;
-  return email == "mattia.belletti@gmail.com";
+  const allowedEmails = (process.env.ALLOWED_EMAILS || "")
+    .split(",")
+    .filter((x) => x);
+  return allowedEmails.indexOf(email) >= 0;
 }
