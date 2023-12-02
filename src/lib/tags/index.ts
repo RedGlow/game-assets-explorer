@@ -5,7 +5,19 @@ import { Prisma } from '@prisma/client';
 import { getter } from '../getter';
 import prisma from '../prisma';
 
+function checkNoDirectories(...fullNames: string[]) {
+  const dirs = fullNames.filter((e) => e.endsWith("/"));
+  if (dirs.length > 0) {
+    throw new Error(
+      `tag operations cannot be performed on directories like: ${dirs.join(
+        ", "
+      )}`
+    );
+  }
+}
+
 export async function tagFile(fullName: string, key: string, value: string) {
+  checkNoDirectories(fullName);
   await prisma.taggedFile.create({
     data: {
       fileFullName: fullName,
@@ -20,6 +32,7 @@ export async function tagFiles(
   key: string,
   value: string
 ) {
+  checkNoDirectories(...fullNames);
   await prisma.taggedFile.createMany({
     data: fullNames.map((fullName) => ({
       fileFullName: fullName,
@@ -57,6 +70,7 @@ export async function removeTag(
   tagKey: string,
   tagValue: string
 ) {
+  checkNoDirectories(fullName);
   await prisma.taggedFile.delete({
     where: {
       tagKey_tagValue_fileFullName: {
@@ -69,6 +83,7 @@ export async function removeTag(
 }
 
 export async function removeTags(fullNames: string[]) {
+  checkNoDirectories(...fullNames);
   await prisma.taggedFile.deleteMany({
     where: {
       fileFullName: {
