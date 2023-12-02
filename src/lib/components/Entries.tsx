@@ -20,6 +20,7 @@ export interface IEntriesClient {
   };
   tags: ITags;
   editDisabled?: boolean;
+  showPath?: boolean;
 }
 
 export function Entries({
@@ -27,6 +28,7 @@ export function Entries({
   existingTags,
   tags,
   editDisabled,
+  showPath,
 }: IEntriesClient) {
   const [nameAscending, setNameAscending] = useState(true);
   const [extensionAscending, setExtensionAscending] = useState(true);
@@ -117,6 +119,7 @@ export function Entries({
             </Table.HeadCell>
           )}
           <Table.HeadCell className="px-2 py-4 w-20" />
+          {showPath && <Table.HeadCell>path</Table.HeadCell>}
           <Table.HeadCell className="pl-2">
             <div className="flex items-center gap-2">
               name{" "}
@@ -169,6 +172,7 @@ export function Entries({
               selectedEntries={selectedEntries}
               setEntrySelection={setEntrySelection}
               editDisabled={editDisabled}
+              showPath={showPath}
             />
           ))}
         </Table.Body>

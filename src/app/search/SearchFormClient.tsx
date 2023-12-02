@@ -64,7 +64,7 @@ export function SearchFormClient({
 
   return (
     <div>
-      <form>
+      <div>
         <div className="grid grid-cols-2 gap-x-16 gap-y-4">
           <div>
             <div className="mb-2 block">
@@ -106,7 +106,7 @@ export function SearchFormClient({
             </Button>
           </div>
         </div>
-      </form>
+      </div>
       {entries.length > 0 && (
         <div className="my-12">
           <Entries
@@ -114,6 +114,7 @@ export function SearchFormClient({
             existingTags={existingTags}
             tags={tags}
             editDisabled
+            showPath
           />
         </div>
       )}

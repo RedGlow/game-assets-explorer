@@ -1,4 +1,5 @@
 import { Checkbox, Table } from 'flowbite-react';
+import Link from 'next/link';
 import { ChangeEvent, useCallback } from 'react';
 import { HiOutlineDocument } from 'react-icons/hi';
 
@@ -33,6 +34,7 @@ export interface IEntryProps {
     isGroupOperation: boolean
   ): void;
   editDisabled?: boolean;
+  showPath?: boolean;
 }
 
 export function Entry({
@@ -42,6 +44,7 @@ export function Entry({
   selectedEntries,
   setEntrySelection,
   editDisabled,
+  showPath,
 }: IEntryProps) {
   const extension = getExtension(entry.fullName);
   const isAudio =
@@ -93,6 +96,15 @@ export function Entry({
           )}
         </div>
       </Table.Cell>
+      {showPath && (
+        <Table.Cell className="pl-2">
+          <div className="flex items-center gap-2">
+            <Link href={`/contents${getPath(entry.fullName)}`} target="_blank">
+              {getPath(entry.fullName)}
+            </Link>
+          </div>
+        </Table.Cell>
+      )}
       <Table.Cell className="pl-2">
         <div className="flex items-center gap-2">{getName(entry.fullName)}</div>
       </Table.Cell>
@@ -112,6 +124,12 @@ const getLastPart = <T extends unknown>(name: T[], skip: number) =>
 
 const getName = (fullName: string, skip: number = 0) =>
   getLastPart(fullName.split("/"), skip);
+
+const getPath = (fullName: string) => {
+  const parts = fullName.split("/").filter((x) => x);
+  parts.pop();
+  return "/" + parts.join("/") + "/";
+};
 
 const getTagsString = (tags: ITags, fullName: string) =>
   fullName in tags ? tags[fullName] : [];

@@ -165,7 +165,6 @@ const FormElement = forwardRef<HTMLInputElement, IFormElementProps>(
           onKeyDown={onKeyDown}
           autoComplete="off"
           autoCorrect="false"
-          required
         />
         <div
           className={`absolute z-10 ${
