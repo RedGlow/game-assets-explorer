@@ -1,6 +1,5 @@
 "use client";
 import { Button, Label, TextInput } from 'flowbite-react';
-import { fromPairs } from 'lodash-es';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { HiOutlineSearch } from 'react-icons/hi';
 
