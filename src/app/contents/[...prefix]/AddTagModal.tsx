@@ -52,10 +52,8 @@ export function AddTagModal({
       initialFocus={firstElementRef}
       position="bottom-right"
     >
-      <Modal.Header>
-        <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-          Add a tag
-        </h3>
+      <Modal.Header className="text-xl font-medium text-gray-900 dark:text-white">
+        Add a tag
       </Modal.Header>
       <Modal.Body>
         <div className="space-y-6">
