@@ -1,7 +1,7 @@
 import { Label, TextInput } from 'flowbite-react';
 import {
-    ChangeEvent, ForwardedRef, forwardRef, KeyboardEvent, useCallback, useImperativeHandle, useRef,
-    useState
+    ChangeEvent, ForwardedRef, forwardRef, KeyboardEvent, RefObject, useCallback,
+    useImperativeHandle, useRef, useState
 } from 'react';
 
 export interface ITagInputProps {
@@ -12,6 +12,7 @@ export interface ITagInputProps {
   setTagValue(newTagValue: string): void;
   existingTags: { [tagKey: string]: string[] };
   allowAnyValue?: boolean;
+  confirm?(): void;
 }
 
 export const TagInput = forwardRef<HTMLInputElement, ITagInputProps>(
@@ -20,10 +21,11 @@ export const TagInput = forwardRef<HTMLInputElement, ITagInputProps>(
       id,
       tagKey,
       setTagKey,
-      setTagValue,
       tagValue,
+      setTagValue,
       existingTags,
       allowAnyValue,
+      confirm,
     },
     ref
   ) {
@@ -35,6 +37,14 @@ export const TagInput = forwardRef<HTMLInputElement, ITagInputProps>(
       allowAnyValue ? ["*"] : []
     );
 
+    const tagValueRef = useRef<HTMLInputElement>(null);
+
+    const onActualConfirm = useCallback(() => {
+      if (!!tagKey && !!tagValue && confirm) {
+        confirm();
+      }
+    }, [confirm, tagKey, tagValue]);
+
     return (
       <div className="flex gap-4 w-full">
         <FormElement
@@ -44,14 +54,18 @@ export const TagInput = forwardRef<HTMLInputElement, ITagInputProps>(
           value={tagKey}
           onChange={setTagKey}
           suggestions={tagKeySuggestions}
+          tabOn=":"
+          tabFocus={tagValueRef}
         />
         <FormElement
+          ref={tagValueRef}
           id={`${id ? id + "-" : ""}tag-value`}
           label="Value"
           sublabel={allowAnyValue ? "An * means any value" : ""}
           value={tagValue}
           onChange={setTagValue}
           suggestions={tagValueSuggestions}
+          onEnter={onActualConfirm}
         />
       </div>
     );
@@ -65,11 +79,24 @@ interface IFormElementProps {
   value: string;
   onChange(newValue: string): void;
   suggestions: string[];
+  tabOn?: string;
+  tabFocus?: RefObject<HTMLInputElement>;
+  onEnter?(): void;
 }
 
 const FormElement = forwardRef<HTMLInputElement, IFormElementProps>(
   function FormElement(
-    { id, label, sublabel, value, onChange, suggestions },
+    {
+      id,
+      label,
+      sublabel,
+      value,
+      onChange,
+      suggestions,
+      tabOn,
+      tabFocus,
+      onEnter,
+    },
     ref: ForwardedRef<HTMLInputElement>
   ) {
     // forward the input element to the outside, while keeping a ref to the input element ourselves
@@ -99,7 +126,10 @@ const FormElement = forwardRef<HTMLInputElement, IFormElementProps>(
       setSelectedSuggestionsIndex,
       setSuggestionsOpened,
       suggestions,
-      onChange
+      onChange,
+      tabOn,
+      tabFocus,
+      onEnter
     );
 
     const ulRef = useRef<HTMLUListElement>(null);
@@ -172,11 +202,21 @@ function useKeyDown(
   setSelectedSuggestionsIndex: (newValue: number) => void,
   setSuggestionsOpened: (newValue: boolean) => void,
   suggestions: string[],
-  onChange: (newValue: string) => void
+  onChange: (newValue: string) => void,
+  tabOn?: string,
+  tabFocus?: RefObject<HTMLInputElement>,
+  confirm?: () => void
 ) {
   return useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
+      console.log(e.code);
       switch (e.code) {
+        case "Semicolon":
+          if (tabOn && tabFocus && tabFocus.current) {
+            tabFocus.current.focus();
+            e.preventDefault();
+          }
+          break;
         case "ArrowDown":
           setSelectedSuggestionsIndex(
             selectedSuggestionsIndex == -1
@@ -200,10 +240,21 @@ function useKeyDown(
           if (selectedSuggestionsIndex != -1) {
             onChange(suggestions[selectedSuggestionsIndex]);
             setSuggestionsOpened(false);
+          } else if (confirm) {
+            confirm();
           }
       }
     },
-    [onChange, selectedSuggestionsIndex, suggestions]
+    [
+      confirm,
+      onChange,
+      selectedSuggestionsIndex,
+      setSelectedSuggestionsIndex,
+      setSuggestionsOpened,
+      suggestions,
+      tabFocus,
+      tabOn,
+    ]
   );
 }
 

@@ -64,6 +64,7 @@ export function AddTagModal({
             tagKey={tagKey}
             tagValue={tagValue}
             ref={firstElementRef}
+            confirm={onButtonClick}
           />
           <Tags tags={currentTags} />
         </div>
