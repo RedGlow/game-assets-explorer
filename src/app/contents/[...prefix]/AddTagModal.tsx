@@ -50,6 +50,7 @@ export function AddTagModal({
       show={isModalOpened}
       onClose={closeModal}
       initialFocus={firstElementRef}
+      position="bottom-right"
     >
       <Modal.Header>
         <h3 className="text-xl font-medium text-gray-900 dark:text-white">
