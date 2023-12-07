@@ -6,7 +6,7 @@ import { HiTag } from 'react-icons/hi';
 import { IoIosRemoveCircle } from 'react-icons/io';
 
 import { onDeleteTags } from '@/lib/actions/on-delete-tag';
-import { ITags } from '@/lib/tags';
+import { ITags } from '@/lib/db';
 import { useBoolean } from '@/lib/use-boolean';
 
 import { AddTagModal } from './AddTagModal';

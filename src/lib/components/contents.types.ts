@@ -1,4 +1,4 @@
-import { ITags } from '@/lib/tags';
+import { ITags } from '@/lib/db';
 
 export interface IContentsEntryDirectory {
   kind: "directory";

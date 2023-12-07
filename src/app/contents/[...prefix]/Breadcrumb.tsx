@@ -1,11 +1,8 @@
-import {
-  Breadcrumb as FlowbiteBreadcrumb,
-  BreadcrumbItem,
-} from "flowbite-react";
-import last from "lodash-es/last";
-import Link from "next/link";
-import { useMemo } from "react";
-import { HiHome } from "react-icons/hi";
+import { Breadcrumb as FlowbiteBreadcrumb, BreadcrumbItem } from 'flowbite-react';
+import last from 'lodash-es/last';
+import Link from 'next/link';
+import { useMemo } from 'react';
+import { HiHome } from 'react-icons/hi';
 
 export interface IBreadcrumbProps {
   prefix: string;

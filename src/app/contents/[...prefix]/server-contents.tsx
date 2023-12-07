@@ -1,5 +1,5 @@
+import { getExistingTags, getTags } from '@/lib/db';
 import { getEntries } from '@/lib/s3';
-import { getExistingTags, getTags } from '@/lib/tags';
 import { ListObjectsV2CommandOutput } from '@aws-sdk/client-s3';
 
 import { IContentsEntry, IServerContentsProps } from '../../../lib/components/contents.types';

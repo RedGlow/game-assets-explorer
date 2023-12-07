@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from 'flowbite-react';
-import { useCallback, useReducer, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { MdImageSearch } from 'react-icons/md';
 

@@ -1,10 +1,9 @@
 "use client";
-import { HiUserCircle } from "react-icons/hi";
-import { User } from "next-auth";
-
-import { Avatar, Button, Dropdown, Navbar } from "flowbite-react";
-import { usePathname } from "next/navigation";
-import { useCallback } from "react";
+import { Avatar, Button, Dropdown, Navbar } from 'flowbite-react';
+import { User } from 'next-auth';
+import { usePathname } from 'next/navigation';
+import { useCallback } from 'react';
+import { HiUserCircle } from 'react-icons/hi';
 
 enum Area {
   Contents,

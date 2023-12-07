@@ -1,4 +1,4 @@
-import { getExistingTags } from '@/lib/tags';
+import { getExistingTags } from '@/lib/db';
 
 import { SearchFormClient } from './SearchFormClient';
 

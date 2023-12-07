@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { removeTag, removeTags } from '@/lib/tags';
+import { removeTag, removeTags } from '@/lib/db';
 
 import { getInvalidatePath } from '../../app/contents/[...prefix]/get-invalidate-path';
 

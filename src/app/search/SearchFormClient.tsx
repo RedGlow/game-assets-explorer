@@ -3,7 +3,7 @@ import { Button, Label, TextInput } from 'flowbite-react';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { HiOutlineSearch } from 'react-icons/hi';
 
-import { ITags } from '@/lib/tags';
+import { ITags } from '@/lib/db';
 import { useBoolean } from '@/lib/use-boolean';
 
 import { IContentsEntry } from '../../lib/components/contents.types';

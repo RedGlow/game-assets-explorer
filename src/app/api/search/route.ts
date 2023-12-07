@@ -1,4 +1,4 @@
-import { getTags, search } from '@/lib/tags';
+import { getTags, search } from '@/lib/db';
 
 export interface ISearchBody {
   hasTags: [string, string][];

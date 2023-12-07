@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import './globals.css';
 
-import { CustomFlowbiteTheme, Flowbite } from "flowbite-react";
-import { Inter } from "next/font/google";
+import { CustomFlowbiteTheme, Flowbite } from 'flowbite-react';
+import { Inter } from 'next/font/google';
 
-import { NavigationBar } from "./NavigationBar";
-import { auth } from "@/auth";
+import { auth } from '@/auth';
+
+import { NavigationBar } from './NavigationBar';
 
 const inter = Inter({ subsets: ["latin"] });
 

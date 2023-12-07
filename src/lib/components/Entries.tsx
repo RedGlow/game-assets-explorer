@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { HiFolder } from 'react-icons/hi';
 
+import { ITags } from '@/lib/db';
 import { getExtension } from '@/lib/get-extension';
-import { ITags } from '@/lib/tags';
 
 import { IContentsEntry } from './contents.types';
 import { EntriesGroupActions } from './EntriesGroupActions';

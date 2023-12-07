@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from 'next/cache';
 
-import { tagFile, tagFiles } from '@/lib/tags';
+import { tagFile, tagFiles } from '@/lib/db';
 
 import { getInvalidatePath } from '../../app/contents/[...prefix]/get-invalidate-path';
 

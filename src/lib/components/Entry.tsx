@@ -5,8 +5,8 @@ import { HiOutlineDocument } from 'react-icons/hi';
 
 import { onDeleteTag } from '@/lib/actions/on-delete-tag';
 import { Tags } from '@/lib/components/Tags';
+import { ITags } from '@/lib/db';
 import { getExtension } from '@/lib/get-extension';
-import { ITags } from '@/lib/tags';
 
 import { AudioPreview } from './AudioPreview';
 import { IContentsEntry } from './contents.types';

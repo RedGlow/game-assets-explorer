@@ -1,6 +1,6 @@
-import { Banner } from "flowbite-react";
-import { HiX } from "react-icons/hi";
-import { MdAnnouncement } from "react-icons/md";
+import { Banner } from 'flowbite-react';
+import { HiX } from 'react-icons/hi';
+import { MdAnnouncement } from 'react-icons/md';
 
 export default async function Home() {
   return (

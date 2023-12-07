@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { FaPause, FaPlay } from 'react-icons/fa';
 
 import { createPresignedUrl } from '@/lib/actions/create-presigned-url';
