@@ -10,9 +10,9 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.461.0",
-    "@aws-sdk/credential-providers": "^3.461.0",
-    "@aws-sdk/s3-request-presigner": "^3.461.0",
+    "@aws-sdk/client-s3": "^3.468.0",
+    "@aws-sdk/credential-providers": "^3.468.0",
+    "@aws-sdk/s3-request-presigner": "^3.468.0",
     "@prisma/client": "^5.6.0",
     "flowbite": "^2.2.0",
     "flowbite-react": "^0.7.0",
