@@ -5,4 +5,6 @@ export { tagFiles } from "./tag-files";
 export { getTags } from "./get-tags";
 export { getExistingTags } from "./get-existing-tags";
 export { search } from "./search";
+export { removeTag } from "./remove-tag";
+export { removeTags } from "./remove-tags";
 export type * from "./types";
