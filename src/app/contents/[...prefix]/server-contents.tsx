@@ -1,9 +1,9 @@
+import { IContentsEntry, IServerContentsProps } from '@/lib/components/contents.types';
+import { Entries } from '@/lib/components/Entries';
 import { getExistingTags, getTags } from '@/lib/db';
 import { getEntries } from '@/lib/s3';
 import { ListObjectsV2CommandOutput } from '@aws-sdk/client-s3';
 
-import { IContentsEntry, IServerContentsProps } from '../../../lib/components/contents.types';
-import { Entries, INavigationEntry } from '../../../lib/components/Entries';
 import { Breadcrumb } from './Breadcrumb';
 
 function listObjectsToEntries(
@@ -34,21 +34,14 @@ export async function ServerContents({
   const tags = await getTags(entries.map((entry) => entry.fullName));
   const existingTags = await getExistingTags();
   const nextContinuationToken = listObjects.NextContinuationToken;
-  const navigationEntries: INavigationEntry[] = [];
-  if (continuationToken) {
-    navigationEntries.push({
-      label: "<<<",
-      url: `/content/${encodeURI(prefix)}`,
-    });
-  }
-  if (nextContinuationToken) {
-    navigationEntries.push({
-      label: ">>",
-      url: `/content/${encodeURI(
-        prefix
-      )}?continuation-token=${encodeURIComponent(nextContinuationToken)}`,
-    });
-  }
+  const paginationPrevious = continuationToken
+    ? `/contents/${encodeURI(prefix)}`
+    : undefined;
+  const paginationNext = nextContinuationToken
+    ? `/contents/${encodeURI(prefix)}?continuation-token=${encodeURIComponent(
+        nextContinuationToken
+      )}`
+    : undefined;
 
   return (
     <main>
@@ -59,7 +52,8 @@ export async function ServerContents({
         entries={entries}
         tags={tags}
         existingTags={existingTags}
-        navigationEntries={navigationEntries}
+        paginationPrevious={paginationPrevious}
+        paginationNext={paginationNext}
       />
     </main>
   );

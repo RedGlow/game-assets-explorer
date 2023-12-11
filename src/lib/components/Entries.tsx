@@ -12,6 +12,7 @@ import { IContentsEntry } from './contents.types';
 import { EntriesGroupActions } from './EntriesGroupActions';
 import { SortButton, SortBy } from './EntriesSorting';
 import { Entry, SelectedEntries } from './Entry';
+import { ForwardPagination } from './ForwardPagination';
 
 export interface INavigationEntry {
   url: string;
@@ -26,7 +27,8 @@ export interface IEntriesClient {
   tags: ITags;
   editDisabled?: boolean;
   showPath?: boolean;
-  navigationEntries?: Array<INavigationEntry>;
+  paginationPrevious?: string;
+  paginationNext?: string;
 }
 
 export function Entries({
@@ -35,13 +37,15 @@ export function Entries({
   tags,
   editDisabled,
   showPath,
-  navigationEntries = [],
+  paginationPrevious,
+  paginationNext,
 }: IEntriesClient) {
   const [nameAscending, setNameAscending] = useState(true);
   const [extensionAscending, setExtensionAscending] = useState(true);
   const [sortBy, setSortBy] = useState<SortBy>("name");
 
-  console.log("navigation entries:", navigationEntries);
+  console.log("navigation previous:", paginationPrevious);
+  console.log("navigation next:", paginationNext);
 
   const getEntries = (
     kind: IContentsEntry["kind"],
@@ -108,6 +112,8 @@ export function Entries({
     },
     [entries]
   );
+
+  const onPageChange = () => {};
 
   return (
     <>
@@ -186,6 +192,10 @@ export function Entries({
           ))}
         </Table.Body>
       </Table>
+      <ForwardPagination
+        paginationPrevious={paginationPrevious}
+        paginationNext={paginationNext}
+      />
     </>
   );
 }

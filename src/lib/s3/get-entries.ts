@@ -9,7 +9,7 @@ export async function getEntries(
   const command = new ListObjectsV2Command({
     Bucket: process.env.AWS_BUCKET_NAME,
     Delimiter: "/",
-    MaxKeys: 20,
+    MaxKeys: 10,
     Prefix: prefix,
     ContinuationToken: continuationToken,
   });
