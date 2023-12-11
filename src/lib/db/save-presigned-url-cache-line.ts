@@ -1,4 +1,4 @@
-import prisma from './prisma';
+import { getDB } from './kysely/db';
 
 export async function savePresignedUrlCacheLine(
   fullname: string,
@@ -7,13 +7,14 @@ export async function savePresignedUrlCacheLine(
 ) {
   const currDate = new Date();
   const expireDate = new Date(currDate.getTime() + 1000 * expiresIn);
-  await prisma.presignedDownloadUrls.create({
-    data: {
+  getDB()
+    .insertInto("PresignedDownloadUrls")
+    .values({
       fullname,
       expiration: expireDate,
       url: signedUrl,
-    },
-  });
+    })
+    .execute();
   console.log(
     `caching ${fullname} expires at ${expireDate} and is ${signedUrl}`
   );

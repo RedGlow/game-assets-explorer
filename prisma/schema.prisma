@@ -5,6 +5,14 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator kysely {
+  provider = "prisma-kysely"
+
+  output       = "../src/lib/db/kysely"
+  fileName     = "types.ts"
+  enumFileName = "enums.ts"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -16,6 +24,11 @@ model TaggedFile {
   fileFullName String
 
   @@id([tagKey, tagValue, fileFullName])
+
+  @@index([tagKey])
+  @@index([tagKey, tagValue])
+  @@index([fileFullName], map: "TaggedFile_fileFullName_eq")
+  @@index([fileFullName(ops: raw("gist_trgm_ops"))], type: Gist, map: "TaggedFile_fileFullName_trgm")
 }
 
 model PresignedDownloadUrls {

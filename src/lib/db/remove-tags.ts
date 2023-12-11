@@ -1,13 +1,10 @@
 import { checkNoDirectories } from './check-no-directories';
-import prisma from './prisma';
+import { getDB } from './kysely/db';
 
 export async function removeTags(fullNames: string[]) {
   checkNoDirectories(...fullNames);
-  await prisma.taggedFile.deleteMany({
-    where: {
-      fileFullName: {
-        in: fullNames,
-      },
-    },
-  });
+  await getDB()
+    .deleteFrom("TaggedFile")
+    .where("fileFullName", "in", fullNames)
+    .execute();
 }

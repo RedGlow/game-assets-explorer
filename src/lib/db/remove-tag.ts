@@ -1,4 +1,5 @@
 import { checkNoDirectories } from './check-no-directories';
+import { getDB } from './kysely/db';
 import prisma from './prisma';
 
 export async function removeTag(
@@ -16,4 +17,5 @@ export async function removeTag(
       },
     },
   });
+  await getDB
 }

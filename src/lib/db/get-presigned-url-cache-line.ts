@@ -1,12 +1,13 @@
-import prisma from './prisma';
+import { getDB } from './kysely/db';
 
 export async function getPresignedUrlCacheLine(fullname: string) {
   const currDate = new Date();
-  const presignedDownloadUrl = await prisma.presignedDownloadUrls.findUnique({
-    where: {
-      fullname,
-    },
-  });
+  const presignedDownloadUrl = await getDB()
+    .selectFrom("PresignedDownloadUrls")
+    .where("fullname", "=", fullname)
+    .select(["url", "expiration"])
+    .limit(2)
+    .executeTakeFirst();
   if (presignedDownloadUrl !== null && presignedDownloadUrl !== undefined) {
     const url = presignedDownloadUrl.url;
     const expireDate = presignedDownloadUrl.expiration;
@@ -16,11 +17,10 @@ export async function getPresignedUrlCacheLine(fullname: string) {
       return url;
     } else {
       console.log("url entry expired, clean up cache");
-      await prisma.presignedDownloadUrls.delete({
-        where: {
-          fullname,
-        },
-      });
+      await getDB()
+        .deleteFrom("PresignedDownloadUrls")
+        .where("fullname", "=", fullname)
+        .execute();
     }
   } else {
     console.log("url entry not found");

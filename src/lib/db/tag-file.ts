@@ -1,13 +1,14 @@
 import { checkNoDirectories } from './check-no-directories';
-import prisma from './prisma';
+import { getDB } from './kysely/db';
 
 export async function tagFile(fullName: string, key: string, value: string) {
   checkNoDirectories(fullName);
-  await prisma.taggedFile.create({
-    data: {
+  await getDB()
+    .insertInto("TaggedFile")
+    .values({
       fileFullName: fullName,
       tagKey: key,
       tagValue: value,
-    },
-  });
+    })
+    .execute();
 }
