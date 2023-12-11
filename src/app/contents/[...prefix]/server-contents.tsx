@@ -3,7 +3,7 @@ import { getEntries } from '@/lib/s3';
 import { ListObjectsV2CommandOutput } from '@aws-sdk/client-s3';
 
 import { IContentsEntry, IServerContentsProps } from '../../../lib/components/contents.types';
-import { Entries } from '../../../lib/components/Entries';
+import { Entries, INavigationEntry } from '../../../lib/components/Entries';
 import { Breadcrumb } from './Breadcrumb';
 
 function listObjectsToEntries(
@@ -27,18 +27,40 @@ function listObjectsToEntries(
 
 export async function ServerContents({
   prefix,
+  continuationToken,
 }: IServerContentsProps) {
-  const listObjects = await getEntries(prefix);
+  const listObjects = await getEntries(prefix, continuationToken);
   const entries = listObjectsToEntries(listObjects);
   const tags = await getTags(entries.map((entry) => entry.fullName));
   const existingTags = await getExistingTags();
+  const nextContinuationToken = listObjects.NextContinuationToken;
+  const navigationEntries: INavigationEntry[] = [];
+  if (continuationToken) {
+    navigationEntries.push({
+      label: "<<<",
+      url: `/content/${encodeURI(prefix)}`,
+    });
+  }
+  if (nextContinuationToken) {
+    navigationEntries.push({
+      label: ">>",
+      url: `/content/${encodeURI(
+        prefix
+      )}?continuation-token=${encodeURIComponent(nextContinuationToken)}`,
+    });
+  }
 
   return (
     <main>
       <div>
         <Breadcrumb prefix={prefix} />
       </div>
-      <Entries entries={entries} tags={tags} existingTags={existingTags} />
+      <Entries
+        entries={entries}
+        tags={tags}
+        existingTags={existingTags}
+        navigationEntries={navigationEntries}
+      />
     </main>
   );
 }

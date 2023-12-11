@@ -13,6 +13,11 @@ import { EntriesGroupActions } from './EntriesGroupActions';
 import { SortButton, SortBy } from './EntriesSorting';
 import { Entry, SelectedEntries } from './Entry';
 
+export interface INavigationEntry {
+  url: string;
+  label: string;
+}
+
 export interface IEntriesClient {
   entries: IContentsEntry[];
   existingTags: {
@@ -21,6 +26,7 @@ export interface IEntriesClient {
   tags: ITags;
   editDisabled?: boolean;
   showPath?: boolean;
+  navigationEntries?: Array<INavigationEntry>;
 }
 
 export function Entries({
@@ -29,10 +35,13 @@ export function Entries({
   tags,
   editDisabled,
   showPath,
+  navigationEntries = [],
 }: IEntriesClient) {
   const [nameAscending, setNameAscending] = useState(true);
   const [extensionAscending, setExtensionAscending] = useState(true);
   const [sortBy, setSortBy] = useState<SortBy>("name");
+
+  console.log("navigation entries:", navigationEntries);
 
   const getEntries = (
     kind: IContentsEntry["kind"],
