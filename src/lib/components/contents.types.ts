@@ -22,4 +22,5 @@ export interface IContentsProps {
 
 export interface IServerContentsProps {
   prefix: string;
+  continuationToken?: string;
 }
