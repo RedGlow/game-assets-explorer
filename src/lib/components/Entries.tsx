@@ -41,6 +41,7 @@ export interface IEntriesClient {
   editDisabled?: boolean;
   showPath?: boolean;
   navigationInfo: ForwardOnlyNavigationInfo | PaginationInfo;
+  disabledNavigation: boolean;
 }
 
 export function Entries({
@@ -50,6 +51,7 @@ export function Entries({
   editDisabled,
   showPath,
   navigationInfo,
+  disabledNavigation,
 }: IEntriesClient) {
   const [nameAscending, setNameAscending] = useState(true);
   const [extensionAscending, setExtensionAscending] = useState(true);

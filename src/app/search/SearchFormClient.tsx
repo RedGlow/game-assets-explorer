@@ -1,24 +1,34 @@
 "use client";
-import { Button, Label, TextInput } from 'flowbite-react';
-import { ChangeEvent, useCallback, useMemo, useState } from 'react';
-import { HiOutlineSearch } from 'react-icons/hi';
+import { Alert, Button, Label, TextInput } from 'flowbite-react';
+import { ChangeEvent, useCallback, useState } from 'react';
+import { HiInformationCircle, HiOutlineSearch } from 'react-icons/hi';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 
 import { IContentsEntry } from '@/lib/components/contents.types';
-import { Entries, PaginationInfo } from '@/lib/components/Entries';
+import { Entries } from '@/lib/components/Entries';
 import { ITags } from '@/lib/db';
 import { useBoolean } from '@/lib/use-boolean';
 
 import { TagSelector } from './TagSelector';
 
 import type { ISearchBody } from "../api/search/route";
+const queryClient = new QueryClient();
 
-export function SearchFormClient({
-  existingTags,
-}: {
+interface ISearchFormClientProps {
   existingTags: {
     [x: string]: string[];
   };
-}) {
+}
+
+export function SearchFormClient(props: ISearchFormClientProps) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <InnerSearchFormClient {...props} />
+    </QueryClientProvider>
+  );
+}
+
+function InnerSearchFormClient({ existingTags }: ISearchFormClientProps) {
   const [includedTags, setIncludedTags] = useState<[string, string][]>([]);
   const [excludedTags, setExcludedTags] = useState<[string, string][]>([]);
 
@@ -28,25 +38,26 @@ export function SearchFormClient({
     []
   );
 
-  const [entries, setEntries] = useState<IContentsEntry[]>([]);
-  const [tags, setTags] = useState<ITags>({});
-
-  const [working, { setTrue: startWorking, setFalse: stopWorking }] =
-    useBoolean(false);
-
   const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [searchRequested, { setTrue: startSearch }] = useBoolean(false);
 
-  const onSearch = useCallback(
-    (requestedPage?: number) => {
-      startWorking();
+  const { isError, isSuccess, isFetching, data, error } = useQuery(
+    [
+      "search-results",
+      currentPage,
+      includedTags,
+      excludedTags,
+      contains,
+      searchRequested,
+    ],
+    () =>
       fetch("/api/search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          page: requestedPage ?? currentPage,
+          page: currentPage,
           hasTags: includedTags,
           hasntTags: excludedTags,
           contains,
@@ -63,49 +74,29 @@ export function SearchFormClient({
             count: number;
             pageSize: number;
           }) => {
-            console.log(result, count, pageSize);
-            setTags(result);
-            setEntries(
-              Object.keys(result).map((fullName) => ({
-                fullName,
-                kind: "file",
-                size: 0,
-              }))
-            );
-            setTotalPages(Math.ceil(count / pageSize));
-            setCurrentPage(requestedPage ?? 0);
+            return {
+              tags: result,
+              entries: Object.keys(result).map(
+                (fullName) =>
+                  ({
+                    fullName,
+                    kind: "file",
+                    size: 0,
+                  } as IContentsEntry)
+              ),
+              totalPages: Math.ceil(count / pageSize),
+            };
           }
-        )
-        .catch(console.error)
-        .finally(stopWorking);
-    },
-    [
-      contains,
-      currentPage,
-      excludedTags,
-      includedTags,
-      startWorking,
-      stopWorking,
-    ]
+        ),
+    {
+      keepPreviousData: true,
+      enabled: searchRequested,
+    }
   );
 
-  const onPageChange = useCallback(
-    (pageNumber: number) => {
-      setCurrentPage(pageNumber - 1);
-      onSearch(pageNumber - 1);
-    },
-    [onSearch]
-  );
-
-  const navigationInfo = useMemo<PaginationInfo>(
-    () => ({
-      kind: "pagination-info",
-      onPageChange,
-      currentPage,
-      totalPages,
-    }),
-    [currentPage, onPageChange, totalPages]
-  );
+  const onPageChange = useCallback((pageNumber: number) => {
+    setCurrentPage(pageNumber - 1);
+  }, []);
 
   return (
     <div>
@@ -147,25 +138,41 @@ export function SearchFormClient({
           </div>
           <div className="col-span-2 flex justify-start">
             <Button
-              onClick={useCallback(() => onSearch(), [onSearch])}
-              isProcessing={working}
+              onClick={useCallback(() => startSearch(), [startSearch])}
+              isProcessing={isFetching}
             >
               Search
             </Button>
           </div>
         </div>
       </div>
-      {entries.length > 0 && navigationInfo !== undefined && (
+      {isSuccess && (
         <div className="my-12">
           <Entries
-            entries={entries}
+            entries={data.entries}
             existingTags={existingTags}
-            tags={tags}
-            navigationInfo={navigationInfo}
+            tags={data.tags}
+            navigationInfo={{
+              kind: "pagination-info",
+              onPageChange,
+              currentPage,
+              totalPages: data.totalPages,
+            }}
+            disabledNavigation={isFetching}
             editDisabled
             showPath
           />
         </div>
+      )}
+      {isError && (
+        <Alert color="failure" icon={HiInformationCircle}>
+          <p className="font-semibold">Error</p>
+          {error instanceof Error ? (
+            <p>{error.stack}</p>
+          ) : (
+            <pre>{JSON.stringify(error)}</pre>
+          )}
+        </Alert>
       )}
     </div>
   );
