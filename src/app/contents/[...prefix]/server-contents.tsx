@@ -52,8 +52,11 @@ export async function ServerContents({
         entries={entries}
         tags={tags}
         existingTags={existingTags}
-        paginationPrevious={paginationPrevious}
-        paginationNext={paginationNext}
+        navigationInfo={{
+          kind: "forward-only-navigation",
+          paginationNext,
+          paginationPrevious,
+        }}
       />
     </main>
   );

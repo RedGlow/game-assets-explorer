@@ -1,6 +1,7 @@
 import { getTags, search } from '@/lib/db';
 
 export interface ISearchBody {
+  page: number;
   hasTags: [string, string][];
   hasntTags: [string, string][];
   contains?: string;
@@ -11,8 +12,14 @@ export async function POST(request: Request) {
   const body: ISearchBody = await request.json();
   console.log("search request body is:", body);
 
-  const fullnames = await search(body.hasTags, body.hasntTags, body.contains);
-  const results = await getTags(fullnames);
+  const [fullnames, count] = await search(
+    body.page,
+    10,
+    body.hasTags,
+    body.hasntTags,
+    body.contains
+  );
+  const result = await getTags(fullnames);
 
-  return Response.json(results);
+  return Response.json({ result, count, pageSize: 10 });
 }

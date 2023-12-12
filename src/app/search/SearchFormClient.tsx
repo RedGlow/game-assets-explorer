@@ -1,16 +1,17 @@
 "use client";
 import { Button, Label, TextInput } from 'flowbite-react';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { HiOutlineSearch } from 'react-icons/hi';
 
+import { IContentsEntry } from '@/lib/components/contents.types';
+import { Entries, PaginationInfo } from '@/lib/components/Entries';
 import { ITags } from '@/lib/db';
 import { useBoolean } from '@/lib/use-boolean';
 
-import { IContentsEntry } from '../../lib/components/contents.types';
-import { Entries } from '../../lib/components/Entries';
 import { TagSelector } from './TagSelector';
 
 import type { ISearchBody } from "../api/search/route";
+
 export function SearchFormClient({
   existingTags,
 }: {
@@ -33,34 +34,78 @@ export function SearchFormClient({
   const [working, { setTrue: startWorking, setFalse: stopWorking }] =
     useBoolean(false);
 
-  const onSearch = useCallback(() => {
-    startWorking();
-    fetch("/api/search", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        hasTags: includedTags,
-        hasntTags: excludedTags,
-        contains,
-      } as ISearchBody),
-    })
-      .then((resp) => resp.json())
-      .then((result: ITags) => {
-        console.log(result);
-        setTags(result);
-        setEntries(
-          Object.keys(result).map((fullName) => ({
-            fullName,
-            kind: "file",
-            size: 0,
-          }))
-        );
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const onSearch = useCallback(
+    (requestedPage?: number) => {
+      startWorking();
+      fetch("/api/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          page: requestedPage ?? currentPage,
+          hasTags: includedTags,
+          hasntTags: excludedTags,
+          contains,
+        } satisfies ISearchBody),
       })
-      .catch(console.error)
-      .finally(stopWorking);
-  }, [contains, excludedTags, includedTags, startWorking, stopWorking]);
+        .then((resp) => resp.json())
+        .then(
+          ({
+            result,
+            count,
+            pageSize,
+          }: {
+            result: ITags;
+            count: number;
+            pageSize: number;
+          }) => {
+            console.log(result, count, pageSize);
+            setTags(result);
+            setEntries(
+              Object.keys(result).map((fullName) => ({
+                fullName,
+                kind: "file",
+                size: 0,
+              }))
+            );
+            setTotalPages(Math.ceil(count / pageSize));
+            setCurrentPage(requestedPage ?? 0);
+          }
+        )
+        .catch(console.error)
+        .finally(stopWorking);
+    },
+    [
+      contains,
+      currentPage,
+      excludedTags,
+      includedTags,
+      startWorking,
+      stopWorking,
+    ]
+  );
+
+  const onPageChange = useCallback(
+    (pageNumber: number) => {
+      setCurrentPage(pageNumber - 1);
+      onSearch(pageNumber - 1);
+    },
+    [onSearch]
+  );
+
+  const navigationInfo = useMemo<PaginationInfo>(
+    () => ({
+      kind: "pagination-info",
+      onPageChange,
+      currentPage,
+      totalPages,
+    }),
+    [currentPage, onPageChange, totalPages]
+  );
 
   return (
     <div>
@@ -101,18 +146,22 @@ export function SearchFormClient({
             />
           </div>
           <div className="col-span-2 flex justify-start">
-            <Button onClick={onSearch} isProcessing={working}>
+            <Button
+              onClick={useCallback(() => onSearch(), [onSearch])}
+              isProcessing={working}
+            >
               Search
             </Button>
           </div>
         </div>
       </div>
-      {entries.length > 0 && (
+      {entries.length > 0 && navigationInfo !== undefined && (
         <div className="my-12">
           <Entries
             entries={entries}
             existingTags={existingTags}
             tags={tags}
+            navigationInfo={navigationInfo}
             editDisabled
             showPath
           />

@@ -1,9 +1,8 @@
-import { SearchForm } from './SearchForm';
+import { getExistingTags } from '@/lib/db';
 
-export default async function Home() {
-  return (
-    <>
-      <SearchForm />
-    </>
-  );
+import { SearchFormClient } from './SearchFormClient';
+
+export default async function SearchForm() {
+  const existingTags = await getExistingTags();
+  return <SearchFormClient existingTags={existingTags} />;
 }

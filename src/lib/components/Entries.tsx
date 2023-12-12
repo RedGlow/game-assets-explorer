@@ -1,5 +1,5 @@
 "use client";
-import { Checkbox, Table } from 'flowbite-react';
+import { Checkbox, Pagination, Table } from 'flowbite-react';
 import fromPairs from 'lodash-es/fromPairs';
 import Link from 'next/link';
 import { ChangeEvent, useCallback, useState } from 'react';
@@ -19,6 +19,19 @@ export interface INavigationEntry {
   label: string;
 }
 
+export interface ForwardOnlyNavigationInfo {
+  kind: "forward-only-navigation";
+  paginationPrevious?: string;
+  paginationNext?: string;
+}
+
+export interface PaginationInfo {
+  kind: "pagination-info";
+  currentPage: number;
+  totalPages: number;
+  onPageChange(newPageNumber: number): void;
+}
+
 export interface IEntriesClient {
   entries: IContentsEntry[];
   existingTags: {
@@ -27,8 +40,7 @@ export interface IEntriesClient {
   tags: ITags;
   editDisabled?: boolean;
   showPath?: boolean;
-  paginationPrevious?: string;
-  paginationNext?: string;
+  navigationInfo: ForwardOnlyNavigationInfo | PaginationInfo;
 }
 
 export function Entries({
@@ -37,15 +49,11 @@ export function Entries({
   tags,
   editDisabled,
   showPath,
-  paginationPrevious,
-  paginationNext,
+  navigationInfo,
 }: IEntriesClient) {
   const [nameAscending, setNameAscending] = useState(true);
   const [extensionAscending, setExtensionAscending] = useState(true);
   const [sortBy, setSortBy] = useState<SortBy>("name");
-
-  console.log("navigation previous:", paginationPrevious);
-  console.log("navigation next:", paginationNext);
 
   const getEntries = (
     kind: IContentsEntry["kind"],
@@ -112,8 +120,6 @@ export function Entries({
     },
     [entries]
   );
-
-  const onPageChange = () => {};
 
   return (
     <>
@@ -192,10 +198,22 @@ export function Entries({
           ))}
         </Table.Body>
       </Table>
-      <ForwardPagination
-        paginationPrevious={paginationPrevious}
-        paginationNext={paginationNext}
-      />
+      {navigationInfo.kind === "forward-only-navigation" && (
+        <ForwardPagination
+          paginationPrevious={navigationInfo.paginationPrevious}
+          paginationNext={navigationInfo.paginationNext}
+        />
+      )}
+      {navigationInfo.kind === "pagination-info" && (
+        <div className="flex justify-center mt-4">
+          <Pagination
+            currentPage={navigationInfo.currentPage + 1}
+            totalPages={navigationInfo.totalPages}
+            onPageChange={navigationInfo.onPageChange}
+            showIcons
+          />
+        </div>
+      )}
     </>
   );
 }
