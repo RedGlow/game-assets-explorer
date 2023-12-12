@@ -13,6 +13,12 @@ export function getDB() {
           connectionString: process.env.DATABASE_URL,
         }),
       }),
+      log(event) {
+        if (event.level === "query") {
+          console.log(event.query.sql);
+          console.log(event.query.parameters);
+        }
+      },
     });
   }
   return db;
