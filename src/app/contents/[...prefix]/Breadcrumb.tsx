@@ -5,12 +5,15 @@ import { useMemo } from 'react';
 import { HiHome } from 'react-icons/hi';
 
 export interface IBreadcrumbProps {
-  prefix: string;
+  prefix?: string;
 }
 
 export function Breadcrumb({ prefix }: IBreadcrumbProps) {
   const breadcrumbElements = useMemo(
-    () => getBreadcrumbElements(prefix),
+    () =>
+      prefix === undefined
+        ? [{ prefix: "...", name: "..." }]
+        : getBreadcrumbElements(prefix),
     [prefix]
   );
 
@@ -18,9 +21,13 @@ export function Breadcrumb({ prefix }: IBreadcrumbProps) {
     <FlowbiteBreadcrumb>
       {breadcrumbElements.map((be, i) => (
         <BreadcrumbItem key={be.prefix} icon={i == 0 ? HiHome : undefined}>
-          <Link href={`/contents/${encodeURI(be.prefix)}`}>
-            {be.name || "Root"}
-          </Link>
+          {prefix !== undefined ? (
+            <Link href={`/contents/${encodeURI(be.prefix)}`}>
+              {be.name || "Root"}
+            </Link>
+          ) : (
+            "..."
+          )}
         </BreadcrumbItem>
       ))}
     </FlowbiteBreadcrumb>

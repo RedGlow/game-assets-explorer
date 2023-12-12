@@ -41,7 +41,7 @@ export interface IEntriesClient {
   editDisabled?: boolean;
   showPath?: boolean;
   navigationInfo: ForwardOnlyNavigationInfo | PaginationInfo;
-  disabledNavigation: boolean;
+  disabledNavigation?: boolean;
 }
 
 export function Entries({
