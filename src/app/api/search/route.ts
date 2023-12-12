@@ -14,7 +14,7 @@ export async function POST(request: Request) {
 
   const [fullnames, count] = await search(
     body.page,
-    10,
+    20,
     body.hasTags,
     body.hasntTags,
     body.contains
